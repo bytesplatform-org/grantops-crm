@@ -1,0 +1,220 @@
+"use client";
+import { useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Columns3, List, Plus, Search } from "lucide-react";
+import { toast } from "sonner";
+import { PageHeader } from "@/components/shared/page-header";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
+import { Tabs, SegmentedList, SegmentedTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { deleteLead, useAppData } from "@/lib/data-service";
+import { LEAD_STAGES, type Lead } from "@/lib/types";
+import { formatCompactCurrency } from "@/lib/utils";
+import { LeadBoard } from "./lead-board";
+import { LeadTable } from "./lead-table";
+import { LeadDrawer } from "./lead-drawer";
+import { LeadFormDialog } from "./lead-form-dialog";
+import { ORG_TYPES } from "./constants";
+
+export function LeadsView() {
+  const data = useAppData();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const openId = params.get("lead");
+  const [view, setView] = useState<"pipeline" | "table">("pipeline");
+  const [q, setQ] = useState("");
+  const [stage, setStage] = useState("all");
+  const [orgType, setOrgType] = useState("all");
+  const [owner, setOwner] = useState("all");
+  const [source, setSource] = useState("all");
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<Lead | undefined>();
+  const [deleting, setDeleting] = useState<Lead | undefined>();
+
+  const sources = useMemo(() => [...new Set(data.leads.map((l) => l.source))].sort(), [data.leads]);
+
+  const filtered = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    return data.leads.filter(
+      (l) =>
+        (!term || [l.company, l.contactName, l.email, l.fundingNeed, l.location].some((s) => s.toLowerCase().includes(term))) &&
+        (stage === "all" || l.stage === stage) &&
+        (orgType === "all" || l.organizationType === orgType) &&
+        (owner === "all" || l.ownerId === owner) &&
+        (source === "all" || l.source === source),
+    );
+  }, [data.leads, q, stage, orgType, owner, source]);
+
+  const stats = useMemo(() => {
+    const open = data.leads.filter((l) => l.stage !== "Won" && l.stage !== "Lost");
+    const won = data.leads.filter((l) => l.stage === "Won").length;
+    const lost = data.leads.filter((l) => l.stage === "Lost").length;
+    return {
+      open: open.length,
+      pipeline: open.reduce((s, l) => s + l.estimatedValue, 0),
+      engagement: open.reduce((s, l) => s + l.proposalValue, 0),
+      winRate: won + lost ? Math.round((won / (won + lost)) * 100) : 0,
+      byStage: LEAD_STAGES.map((s) => ({ stage: s, value: data.leads.filter((l) => l.stage === s).reduce((a, l) => a + l.estimatedValue, 0), count: data.leads.filter((l) => l.stage === s).length })),
+    };
+  }, [data.leads]);
+
+  const setLeadParam = (id?: string) => {
+    const p = new URLSearchParams(params.toString());
+    if (id) p.set("lead", id);
+    else p.delete("lead");
+    router.replace(`${pathname}${p.toString() ? `?${p}` : ""}`, { scroll: false });
+  };
+
+  const openLead = data.leads.find((l) => l.id === openId);
+  const maxStage = Math.max(1, ...stats.byStage.map((s) => s.value));
+
+  return (
+    <div>
+      <PageHeader
+        title="Leads"
+        description="Business development pipeline for prospective funding clients."
+        actions={
+          <Button
+            onClick={() => {
+              setEditing(undefined);
+              setFormOpen(true);
+            }}
+          >
+            <Plus /> Add Lead
+          </Button>
+        }
+      />
+
+      <div className="mb-5 grid gap-4 lg:grid-cols-[repeat(3,minmax(0,1fr))_2fr]">
+        <Card className="p-4">
+          <div className="text-xs font-medium text-muted-foreground">Open leads</div>
+          <div className="mt-1.5 text-2xl font-semibold tabular">{stats.open}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-xs font-medium text-muted-foreground">Pipeline project value</div>
+          <div className="mt-1.5 text-2xl font-semibold tabular">{formatCompactCurrency(stats.pipeline)}</div>
+          <div className="mt-1 text-xs text-muted-foreground">{formatCompactCurrency(stats.engagement)} in proposed engagements</div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-xs font-medium text-muted-foreground">Win rate</div>
+          <div className="mt-1.5 text-2xl font-semibold tabular">{stats.winRate}%</div>
+          <div className="mt-1 text-xs text-muted-foreground">Won vs. lost, trailing 12 months</div>
+        </Card>
+        <Card className="p-4">
+          <div className="mb-2 text-xs font-medium text-muted-foreground">Value by stage</div>
+          <div className="flex h-14 items-end gap-1.5">
+            {stats.byStage.map((s) => (
+              <button key={s.stage} title={`${s.stage}: ${formatCompactCurrency(s.value)} (${s.count})`} onClick={() => setStage(stage === s.stage ? "all" : s.stage)} className="group flex flex-1 flex-col items-center gap-1">
+                <div
+                  className={`w-full rounded-sm transition-colors ${stage === s.stage ? "bg-primary" : s.stage === "Lost" ? "bg-slate-300 group-hover:bg-slate-400" : "bg-primary/40 group-hover:bg-primary/60"}`}
+                  style={{ height: `${Math.max(4, (s.value / maxStage) * 40)}px` }}
+                />
+                <span className="w-full truncate text-center text-[9px] text-muted-foreground">{s.stage.split(" ")[0]}</span>
+              </button>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <div className="relative min-w-56 flex-1 sm:max-w-xs">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search leads…" className="pl-8" aria-label="Search leads" />
+        </div>
+        <Select value={stage} onChange={(e) => setStage(e.target.value)} className="w-44" aria-label="Filter by stage">
+          <option value="all">All stages</option>
+          {LEAD_STAGES.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </Select>
+        <Select value={orgType} onChange={(e) => setOrgType(e.target.value)} className="w-48" aria-label="Filter by organization type">
+          <option value="all">All org types</option>
+          {ORG_TYPES.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </Select>
+        <Select value={owner} onChange={(e) => setOwner(e.target.value)} className="w-40" aria-label="Filter by owner">
+          <option value="all">All owners</option>
+          {data.team.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
+        </Select>
+        <Select value={source} onChange={(e) => setSource(e.target.value)} className="w-52" aria-label="Filter by source">
+          <option value="all">All sources</option>
+          {sources.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </Select>
+        <div className="ml-auto">
+          <Tabs value={view} onValueChange={(v) => setView(v as "pipeline" | "table")}>
+            <SegmentedList>
+              <SegmentedTrigger value="pipeline">
+                <Columns3 /> Pipeline
+              </SegmentedTrigger>
+              <SegmentedTrigger value="table">
+                <List /> Table
+              </SegmentedTrigger>
+            </SegmentedList>
+          </Tabs>
+        </div>
+      </div>
+
+      {view === "pipeline" ? (
+        <LeadBoard leads={filtered} onOpen={setLeadParam} />
+      ) : (
+        <LeadTable
+          leads={filtered}
+          onOpen={setLeadParam}
+          onEdit={(l) => {
+            setEditing(l);
+            setFormOpen(true);
+          }}
+          onDelete={setDeleting}
+        />
+      )}
+
+      <LeadDrawer
+        lead={openLead}
+        onClose={() => setLeadParam()}
+        onEdit={(l) => {
+          setEditing(l);
+          setFormOpen(true);
+        }}
+      />
+      <LeadFormDialog open={formOpen} onOpenChange={setFormOpen} lead={editing} />
+
+      <Dialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(undefined)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete lead?</DialogTitle>
+            <DialogDescription>{deleting?.company} and its notes and tasks will be removed from the pipeline. This cannot be undone.</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleting(undefined)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (deleting) {
+                  deleteLead(deleting.id);
+                  if (openId === deleting.id) setLeadParam();
+                  toast.success("Lead deleted", { description: deleting.company });
+                }
+                setDeleting(undefined);
+              }}
+            >
+              Delete lead
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

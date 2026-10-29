@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GrantOS — Grant Operations & Client Management Platform (Demo)
 
-## Getting Started
+A frontend-only demo CRM for a grant-writing / federal funding consultancy. It covers the full
+workflow: **Lead → Client → Funding Profile → Grant Discovery → Matching → NOFO Analysis →
+Go/No-Go → Application Workspace → Writing → Documents → Compliance → Ready to Submit →
+Grants.gov handoff → Outcome**.
 
-First, run the development server:
+> Demo workspace. All opportunities are fictional sample data (`isDemo: true`). GrantOS tracks
+> preparation and handoff; official submission happens through Grants.gov Workspace.
+
+## Run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# open http://localhost:3000  — sign in with demo@grantos.local / any password
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Production build: `npm run build && npm start`. Deploys to Vercel with zero configuration.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Next.js 16 (App Router, Turbopack) · React 19 · TypeScript (strict) · Tailwind CSS v4 ·
+shadcn-style components on Radix UI · Lucide icons · Recharts · Sonner toasts.
 
-## Learn More
+## Data & persistence
 
-To learn more about Next.js, take a look at the following resources:
+| File | Purpose |
+| --- | --- |
+| `lib/types.ts` | Domain types (Lead, Client, Opportunity, GrantMatch, Application, NOFOAnalysis, …) |
+| `lib/mock/*`, `lib/mock-data.ts` | Seed data, generated relative to "today" on first load |
+| `lib/storage.ts` | Error-safe localStorage helpers + fake demo session |
+| `lib/store.ts` | External store (`useAppData`) persisted under `grantos_demo_v1` |
+| `lib/data-service.ts` | **Service layer** — every read/write the UI performs |
+| `lib/ai-service.ts` | Simulated AI (NOFO analysis, drafting, improve, shorten, requirement check) |
+| `lib/matching.ts` | Explainable client ↔ opportunity scoring and Go/No-Go rules |
+| `lib/selectors.ts` | Derived data (budget totals, completion %, KPIs) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To connect a backend, replace the function bodies in `lib/data-service.ts` and `lib/ai-service.ts`
+with API calls; components only depend on those signatures.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Reset everything from **Settings → Demo Data → Reset Demo Workspace** (or the profile menu).
 
-## Deploy on Vercel
+## Suggested demo path
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Clients → **Horizon Fleet Services** → Funding Profile
+2. **Find Funding** → Clean Transportation Infrastructure Program (86% potential match)
+3. Opportunity → **NOFO Analysis → Run Analysis**
+4. Matches → review breakdown → **Start Application** → score Go/No-Go → **Approve Pursuit**
+5. Application → **Writing Workspace** → Generate Draft / Check Requirement
+6. Requirements (compliance matrix), Documents → **Request Documents**
+7. Budget builder (see the Horizon DOE application: $475,000 federal / $118,750 match / 20%)
+8. Reviews → resolve comments → Submission → **Open Grants.gov Workspace** → Mark Submitted → Record Outcome
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Brand
+
+The product name lives in `components/layout/nav.ts` (`BRAND`) and `app/layout.tsx` metadata.
