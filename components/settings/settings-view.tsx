@@ -146,7 +146,7 @@ export function SettingsView() {
                     toast.success("Preference saved");
                   }}
                 >
-                  <option value="kanban">Kanban board</option>
+                  <option value="kanban">Board</option>
                   <option value="table">Table</option>
                 </Select>
               </Row>

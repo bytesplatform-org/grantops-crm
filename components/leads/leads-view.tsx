@@ -122,7 +122,7 @@ export function LeadsView() {
                 <List /> Table
               </SegmentedTrigger>
               <SegmentedTrigger value="pipeline">
-                <Columns3 /> Kanban
+                <Columns3 /> Board
               </SegmentedTrigger>
             </SegmentedList>
           </Tabs>

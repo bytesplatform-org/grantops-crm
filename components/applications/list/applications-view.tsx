@@ -58,7 +58,7 @@ export function ApplicationsView() {
           <>
             <SegmentedList>
               <SegmentedTrigger value="kanban">
-                <Kanban /> Kanban
+                <Kanban /> Board
               </SegmentedTrigger>
               <SegmentedTrigger value="table">
                 <Rows3 /> Table

@@ -32,9 +32,12 @@ function Section({ title, children, action }: { title: string; children: React.R
 }
 
 export function LeadDrawer({ lead, onClose, onEdit }: { lead?: Lead; onClose: () => void; onEdit: (l: Lead) => void }) {
+  // Keep showing the last lead while the panel slides out after closing.
+  const [shown, setShown] = useState(lead);
+  if (lead && lead !== shown) setShown(lead);
   return (
     <Sheet open={!!lead} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent className="max-w-[560px]">{lead && <LeadDetail key={lead.id} lead={lead} onEdit={onEdit} />}</SheetContent>
+      <SheetContent className="max-w-[560px]">{shown && <LeadDetail key={shown.id} lead={shown} onEdit={onEdit} />}</SheetContent>
     </Sheet>
   );
 }

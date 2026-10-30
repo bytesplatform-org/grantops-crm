@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight, LogOut, RotateCcw, SlidersHorizontal, User } from "lucide-react";
+import { ChevronUp, LogOut, RotateCcw, SlidersHorizontal, User } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -24,23 +24,23 @@ export function ProfileMenu({ onNavigate, compact = false }: { onNavigate?: () =
           <button
             aria-label={compact ? "Account menu" : undefined}
             className={cn(
-              "flex w-full items-center gap-3 rounded-xl py-2 text-left transition-colors hover:bg-sidebar-accent data-[state=open]:bg-sidebar-accent",
+              "group flex w-full items-center gap-3 rounded-xl bg-sidebar-accent py-2 text-left transition-colors hover:bg-[#363a43] data-[state=open]:bg-[#363a43]",
               compact ? "justify-center px-0" : "px-2",
             )}
           >
-            <Avatar name={user.name} color="bg-violet-500" size="lg" />
+            <Avatar name={user.name} color="bg-brand text-brand-foreground" size="lg" />
             {!compact && (
               <>
                 <span className="min-w-0 flex-1 leading-tight">
                   <span className="block truncate text-[14px] font-medium text-white">{user.name}</span>
                   <span className="block truncate text-[12px] text-sidebar-muted">{user.email}</span>
                 </span>
-                <ChevronRight className="size-4 shrink-0 text-sidebar-muted" />
+                <ChevronUp className="size-4 shrink-0 text-sidebar-muted transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </>
             )}
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" align="end" sideOffset={12} className="w-56">
+        <DropdownMenuContent side="top" align="start" sideOffset={8} className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56">
           <DropdownMenuItem asChild>
             <Link href="/settings" onClick={onNavigate}>
               <User /> Profile
