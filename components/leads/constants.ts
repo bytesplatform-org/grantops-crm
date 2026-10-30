@@ -10,16 +10,6 @@ export const ORG_TYPES: OrganizationType[] = [
   "Workforce Board",
 ];
 
-export const LEAD_SOURCES = [
-  "Website inquiry",
-  "Referral — Partner network",
-  "Referral — Client",
-  "Conference",
-  "Webinar",
-  "LinkedIn outreach",
-  "Cold outreach",
-];
-
 export const PROPOSAL_STATUSES: ProposalStatus[] = ["Not Started", "Drafting", "Sent", "Accepted", "Declined"];
 
 export const toDateInput = (iso?: string) => (iso ? iso.slice(0, 10) : "");

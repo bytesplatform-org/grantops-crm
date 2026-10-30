@@ -100,9 +100,10 @@ export function TaskStatusBadge({ status }: { status: TaskStatus }) {
 }
 
 export const LEAD_STAGE_VARIANT: Record<LeadStage, V> = {
-  "New Inquiry": "secondary",
-  "Discovery Scheduled": "info",
-  Qualified: "default",
+  "New Lead": "secondary",
+  Contacted: "info",
+  "Discovery Scheduled": "default",
+  Qualified: "dark",
   "Proposal Sent": "violet",
   Negotiation: "warning",
   Won: "success",

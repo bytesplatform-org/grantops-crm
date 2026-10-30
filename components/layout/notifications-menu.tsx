@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { Award, Bell, CalendarClock, CheckCheck, FileUp, GitCompareArrows, ListChecks, MessageSquare, Send, X } from "lucide-react";
+import { Award, Bell, CalendarClock, CheckCheck, FileUp, GitCompareArrows, ListChecks, MessageSquare, Send, X, Mail } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { dismissNotification, markAllNotificationsRead, markNotificationRead, useAppData } from "@/lib/data-service";
@@ -16,6 +16,7 @@ const ICONS: Record<NotificationType, { icon: ComponentType<{ className?: string
   submission: { icon: Send, cls: "bg-slate-100 text-slate-700" },
   task: { icon: ListChecks, cls: "bg-sky-50 text-sky-600" },
   award: { icon: Award, cls: "bg-emerald-50 text-emerald-600" },
+  email: { icon: Mail, cls: "bg-brand/30 text-zinc-800" },
 };
 
 export function NotificationsMenu() {

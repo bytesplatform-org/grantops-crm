@@ -9,6 +9,7 @@ import { getSession } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
+import { MailScheduler } from "@/components/leads/inbox/mail-scheduler";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const hydrated = useHydrated();
@@ -34,6 +35,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <TooltipProvider>
+      <MailScheduler />
       <div className="flex min-h-screen bg-frame">
         <div className="fixed inset-y-0 left-0 z-40 hidden lg:block">
           <Sidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed((c) => !c)} />

@@ -8,15 +8,21 @@ import { buildOpportunities } from "./mock/opportunities";
 import { buildApplications, buildReviews } from "./mock/applications";
 import { buildMatches } from "./mock/matches";
 import { buildLeads } from "./mock/leads";
+import { buildLeadEmails } from "./mock/lead-outreach";
 import { buildActivities, buildDocumentRequests, buildDocuments, buildNotifications, buildTasks } from "./mock/records";
 
-export const DATA_VERSION = 1;
+// Bump when the stored shape changes; older saved workspaces are reseeded.
+export const DATA_VERSION = 2;
+
+const FIRM_NAME = "Capitol Ridge Grant Partners";
 
 export function buildSeedData(): AppData {
   const clients = buildClients();
   const opportunities = buildOpportunities();
   const applications = buildApplications(clients, opportunities);
   const matches = buildMatches(clients, opportunities);
+  const leads = buildLeads();
+  const { emails, pendingReplies } = buildLeadEmails(leads, team, FIRM_NAME);
 
   // Opportunities with an application in progress have already been analyzed.
   // The Clean Transportation Infrastructure Program is left un-analyzed for the demo flow.
@@ -33,7 +39,10 @@ export function buildSeedData(): AppData {
     version: DATA_VERSION,
     seededAt: new Date().toISOString(),
     team,
-    leads: buildLeads(),
+    leads,
+    emails,
+    pendingReplies,
+    leadDiscovery: { lastRunAt: new Date(Date.now() - 3 * 3_600_000).toISOString(), discoveredKeys: [] },
     clients,
     contacts: buildContacts(),
     opportunities,
@@ -47,7 +56,7 @@ export function buildSeedData(): AppData {
     notifications: buildNotifications(),
     reviews: buildReviews(applications),
     settings: {
-      firmName: "Capitol Ridge Grant Partners",
+      firmName: FIRM_NAME,
       currentUserId: "u-sarah",
       defaultApplicationView: "kanban",
       compactTables: false,

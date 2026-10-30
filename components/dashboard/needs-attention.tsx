@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { AlertTriangle, ChevronRight, Clock, FileWarning, Mail, UserCheck, type LucideIcon } from "lucide-react";
+import { AlertTriangle, ChevronRight, Clock, FileWarning, Inbox, Mail, UserCheck, type LucideIcon } from "lucide-react";
 import type { AppData } from "@/lib/types";
 import { isActive } from "@/lib/selectors";
 import { cn, daysUntil } from "@/lib/utils";
@@ -20,6 +20,16 @@ function appHref(id?: string, tab?: string) {
 
 export function attentionItems(data: AppData): Item[] {
   const items: Item[] = [];
+  const unreadReplies = data.emails.filter((e) => e.direction === "inbound" && !e.read);
+  if (unreadReplies.length)
+    items.push({
+      key: "replies",
+      icon: Inbox,
+      tone: "text-lime-700 bg-lime-100",
+      label: `${unreadReplies.length} unread lead repl${unreadReplies.length === 1 ? "y" : "ies"}`,
+      detail: [...new Set(unreadReplies.map((e) => e.fromName))].slice(0, 2).join(", "),
+      href: unreadReplies.length === 1 ? `/leads?tab=inbox&thread=${unreadReplies[0].threadId}` : "/leads?tab=inbox",
+    });
   const overdueDocs = data.documents.filter((d) => d.status === "Overdue");
   if (overdueDocs.length)
     items.push({

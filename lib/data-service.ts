@@ -13,6 +13,7 @@ import type {
   ComplianceRequirement,
   Contact,
   DocumentItem,
+  EmailMessage,
   DocumentRequest,
   GoNoGoAssessment,
   GrantMatch,
@@ -33,7 +34,8 @@ import { buildComplianceFromNofo, buildNofoAnalysis } from "./content-library";
 import { computeMatch, emptyGoNoGo, goNoGoTotal } from "./matching";
 import { budgetTotals, riskFromMatch } from "./selectors";
 import { buildBudget, buildSections, checklistFor } from "./mock/applications";
-import { formatCurrency, isoFromNow, uid } from "./utils";
+import { formatCurrency, isoFromNow, sleep, uid } from "./utils";
+import { PROSPECT_POOL, emailFooter, pickReplyKind, replyBody, replyDelayMs } from "./mock/lead-outreach";
 
 export { useAppData, useHydrated, getState } from "./store";
 
@@ -66,17 +68,6 @@ function touchApp(d: AppData, app: Application) {
 
 // ---------------------------------------------------------------- Leads
 
-export type LeadInput = Omit<Lead, "id" | "notes" | "tasks" | "createdAt" | "lastContact"> & { lastContact?: string };
-
-export function addLead(input: LeadInput): string {
-  const id = uid("l");
-  update((d) => {
-    d.leads.unshift({ ...input, id, lastContact: input.lastContact ?? now(), notes: [], tasks: [], createdAt: now() });
-    log(d, { type: "lead", message: `New lead added: ${input.company}.`, leadId: id });
-  });
-  return id;
-}
-
 export function updateLead(id: string, patch: Partial<Lead>) {
   update((d) => {
     const l = d.leads.find((x) => x.id === id);
@@ -99,6 +90,155 @@ export function moveLeadStage(id: string, stage: LeadStage) {
 export function deleteLead(id: string) {
   update((d) => {
     d.leads = d.leads.filter((x) => x.id !== id);
+    d.emails = d.emails.filter((e) => e.leadId !== id);
+    d.pendingReplies = d.pendingReplies.filter((p) => p.leadId !== id);
+  });
+}
+
+/**
+ * Simulated lead discovery: "finds" two or three new prospects from a fixed
+ * pool of fictional organizations. Returns the leads added (empty when the
+ * pool is used up). To connect a real scraper, replace this body with an API call.
+ */
+export async function discoverLeads(): Promise<Lead[]> {
+  await sleep(2200);
+  const s = getState();
+  const fresh = PROSPECT_POOL.filter((p) => !s.leadDiscovery.discoveredKeys.includes(p.key) && !s.leads.some((l) => l.company === p.company));
+  const batch = fresh.slice(0, 2 + Math.floor(Math.random() * 2));
+  const added: Lead[] = [];
+  update((d) => {
+    d.leadDiscovery.lastRunAt = now();
+    batch.forEach((p, i) => {
+      const { key, ...rest } = p;
+      const at = new Date(Date.now() - i * 60_000).toISOString();
+      const lead: Lead = {
+        ...rest,
+        id: uid("l"),
+        stage: "New Lead",
+        optedOut: false,
+        discoveredAt: at,
+        lastContact: at,
+        nextAction: "Send introduction email",
+        nextActionDate: isoFromNow(1),
+        ownerId: d.settings.currentUserId,
+        proposalStatus: "Not Started",
+        proposalValue: 0,
+        notes: [],
+        tasks: [],
+        createdAt: at,
+      };
+      d.leads.unshift(lead);
+      d.leadDiscovery.discoveredKeys.push(key);
+      added.push(lead);
+      log(d, { type: "lead", actorId: "system", message: `Discovered ${lead.company} via ${lead.source}.`, leadId: lead.id });
+    });
+  });
+  return added;
+}
+
+// ---------------------------------------------------------------- Lead email (simulated)
+
+export interface SendEmailInput {
+  leadId: string;
+  subject: string;
+  body: string;
+  /** Reply within an existing thread; omit to start a new one. */
+  threadId?: string;
+}
+
+/**
+ * Simulated send. Appends the firm footer, moves New Lead → Contacted, and may
+ * schedule a reply that arrives 12–35s later (see deliverDueReplies).
+ */
+export async function sendLeadEmail(input: SendEmailInput): Promise<{ threadId: string }> {
+  const lead = getState().leads.find((l) => l.id === input.leadId);
+  if (!lead) throw new Error("Lead not found");
+  if (lead.optedOut) throw new Error(`${lead.company} asked not to be contacted.`);
+  await sleep(700);
+  const threadId = input.threadId ?? uid("th");
+  update((d) => {
+    const l = d.leads.find((x) => x.id === input.leadId);
+    if (!l) return;
+    const sender = d.team.find((t) => t.id === d.settings.currentUserId) ?? d.team[0];
+    d.emails.push({
+      id: uid("em"),
+      threadId,
+      leadId: l.id,
+      direction: "outbound",
+      fromName: sender.name,
+      fromEmail: sender.email,
+      toName: l.contactName,
+      toEmail: l.email,
+      subject: input.subject.trim(),
+      body: `${input.body.trim()}\n\n${emailFooter(d.settings.firmName)}`,
+      sentAt: now(),
+      read: true,
+      senderId: sender.id,
+    });
+    l.lastContact = now();
+    log(d, { type: "email", message: `Emailed ${l.contactName} (${l.company}): “${input.subject.trim()}”.`, leadId: l.id });
+    if (l.stage === "New Lead") {
+      l.stage = "Contacted";
+      if (l.nextAction === "Send introduction email") {
+        l.nextAction = "Follow up if no reply";
+        l.nextActionDate = isoFromNow(4);
+      }
+    }
+    if (!d.pendingReplies.some((p) => p.threadId === threadId)) {
+      const kind = pickReplyKind(l);
+      if (kind) d.pendingReplies.push({ id: uid("pr"), leadId: l.id, threadId, kind, dueAt: new Date(Date.now() + replyDelayMs()).toISOString() });
+    }
+  });
+  return { threadId };
+}
+
+/** Delivers simulated replies whose time has come. Returns the new messages. */
+export function deliverDueReplies(): EmailMessage[] {
+  const due = getState().pendingReplies.filter((p) => +new Date(p.dueAt) <= Date.now());
+  if (!due.length) return [];
+  const delivered: EmailMessage[] = [];
+  update((d) => {
+    const dueIds = new Set(due.map((p) => p.id));
+    d.pendingReplies = d.pendingReplies.filter((p) => !dueIds.has(p.id));
+    for (const p of due) {
+      const l = d.leads.find((x) => x.id === p.leadId);
+      if (!l) continue;
+      const last = d.emails.filter((e) => e.threadId === p.threadId).sort((a, b) => +new Date(a.sentAt) - +new Date(b.sentAt)).at(-1);
+      const to = d.team.find((t) => t.id === last?.senderId) ?? d.team.find((t) => t.id === l.ownerId) ?? d.team[0];
+      const subject = last ? (last.subject.startsWith("Re:") ? last.subject : `Re: ${last.subject}`) : `Re: ${l.company}`;
+      const msg: EmailMessage = {
+        id: uid("em"),
+        threadId: p.threadId,
+        leadId: l.id,
+        direction: "inbound",
+        fromName: l.contactName,
+        fromEmail: l.email,
+        toName: to.name,
+        toEmail: to.email,
+        subject,
+        body: replyBody(p.kind, l),
+        sentAt: now(),
+        read: false,
+      };
+      d.emails.push(msg);
+      delivered.push(msg);
+      l.lastContact = now();
+      log(d, { type: "email", actorId: "system", message: `${l.contactName} (${l.company}) replied: “${subject}”.`, leadId: l.id });
+      if (p.kind === "opt-out") {
+        l.optedOut = true;
+        log(d, { type: "lead", actorId: "system", message: `${l.company} asked not to be contacted. Outreach is now blocked.`, leadId: l.id });
+      }
+      notify(d, { type: "email", title: `New reply from ${l.contactName}`, body: `${l.company} — ${subject}`, href: `/leads?tab=inbox&thread=${p.threadId}` });
+    }
+  });
+  return delivered;
+}
+
+export function markThreadRead(threadId: string, read = true) {
+  const s = getState();
+  if (!s.emails.some((e) => e.threadId === threadId && e.direction === "inbound" && e.read !== read)) return;
+  update((d) => {
+    for (const e of d.emails) if (e.threadId === threadId && e.direction === "inbound") e.read = read;
   });
 }
 

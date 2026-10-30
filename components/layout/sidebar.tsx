@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeft, ArrowRight, Landmark, Sparkles } from "lucide-react";
+import { ArrowLeft, Landmark } from "lucide-react";
 import { useAppData } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { BRAND, NAV } from "./nav";
 import { ProfileMenu } from "./profile-menu";
+import { unreadCount } from "@/components/leads/inbox/threads";
 
 export function Sidebar({
   onNavigate,
@@ -19,6 +20,7 @@ export function Sidebar({
   const pathname = usePathname();
   const data = useAppData();
   const counts: Record<string, number> = {
+    "/leads": unreadCount(data),
     "/matches": data.matches.filter((m) => m.status === "New").length,
   };
   const isOn = (href: string) => pathname === href || pathname.startsWith(href + "/");
@@ -83,24 +85,6 @@ export function Sidebar({
           })}
         </ul>
       </nav>
-      {!collapsed && (
-        <div className="px-4 pb-4">
-          <div className="rounded-2xl bg-zinc-200 p-4 text-foreground">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-dark text-white">
-              <Sparkles className="size-[18px]" />
-            </span>
-            <div className="mt-3 text-[17px] font-semibold tracking-tight">Find new funding</div>
-            <p className="mt-1 text-[13px] leading-snug text-zinc-600">Score a client against open federal opportunities in seconds.</p>
-            <Link
-              href="/opportunities"
-              onClick={onNavigate}
-              className="mt-4 flex h-10 items-center justify-center gap-1.5 rounded-xl bg-dark text-[13px] font-medium text-white transition-colors hover:bg-[#2e323a]"
-            >
-              Find Funding <ArrowRight className="size-3.5" />
-            </Link>
-          </div>
-        </div>
-      )}
       <div className={cn("pb-4", collapsed ? "px-3" : "px-3")}>
         <ProfileMenu onNavigate={onNavigate} compact={collapsed} />
       </div>

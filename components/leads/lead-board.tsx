@@ -12,7 +12,8 @@ import { Select } from "@/components/ui/select";
 const DOT: Record<string, string> = {
   secondary: "bg-slate-400",
   info: "bg-sky-500",
-  default: "bg-primary",
+  default: "bg-lime-500",
+  dark: "bg-slate-600",
   violet: "bg-violet-500",
   warning: "bg-amber-500",
   success: "bg-emerald-500",

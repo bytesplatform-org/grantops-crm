@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { addLead, updateLead, useAppData } from "@/lib/data-service";
+import { updateLead, useAppData } from "@/lib/data-service";
 import { LEAD_STAGES, type Lead, type LeadStage, type OrganizationType, type ProposalStatus } from "@/lib/types";
 import { isoFromNow } from "@/lib/utils";
-import { LEAD_SOURCES, ORG_TYPES, PROPOSAL_STATUSES, fromDateInput, splitList, toDateInput } from "./constants";
+import { ORG_TYPES, PROPOSAL_STATUSES, fromDateInput, splitList, toDateInput } from "./constants";
 
 interface FormState {
   company: string;
@@ -22,7 +22,6 @@ interface FormState {
   location: string;
   fundingNeed: string;
   estimatedValue: string;
-  source: string;
   stage: LeadStage;
   nextAction: string;
   nextActionDate: string;
@@ -44,8 +43,7 @@ function initial(lead?: Lead, ownerId = "u-sarah"): FormState {
     location: lead?.location ?? "",
     fundingNeed: lead?.fundingNeed ?? "",
     estimatedValue: lead ? String(lead.estimatedValue) : "",
-    source: lead?.source ?? LEAD_SOURCES[0],
-    stage: lead?.stage ?? "New Inquiry",
+    stage: lead?.stage ?? "New Lead",
     nextAction: lead?.nextAction ?? "Schedule intro call",
     nextActionDate: toDateInput(lead?.nextActionDate ?? isoFromNow(2)),
     ownerId: lead?.ownerId ?? ownerId,
@@ -93,7 +91,6 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
       location: form.location.trim(),
       fundingNeed: form.fundingNeed.trim(),
       estimatedValue: Number(form.estimatedValue) || 0,
-      source: form.source,
       stage: form.stage,
       nextAction: form.nextAction.trim(),
       nextActionDate: fromDateInput(form.nextActionDate),
@@ -106,9 +103,6 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
     if (lead) {
       updateLead(lead.id, payload);
       toast.success("Lead updated", { description: payload.company });
-    } else {
-      addLead(payload);
-      toast.success("Lead added", { description: `${payload.company} added to New Inquiry.` });
     }
     onOpenChange(false);
   }
@@ -119,8 +113,8 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{lead ? "Edit lead" : "Add lead"}</DialogTitle>
-          <DialogDescription>Business development record for a prospective consulting client.</DialogDescription>
+          <DialogTitle>Edit lead</DialogTitle>
+          <DialogDescription>Correct contact details or update the pipeline fields for this discovered lead.</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-4" noValidate>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -166,14 +160,6 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
             <div className="space-y-1.5">
               <Label htmlFor="lf-value">Estimated project value ($)</Label>
               <Input id="lf-value" type="number" min={0} value={form.estimatedValue} onChange={(e) => set("estimatedValue", e.target.value)} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="lf-source">Lead source</Label>
-              <Select id="lf-source" value={form.source} onValueChange={(v) => set("source", v)}>
-                {[...new Set([form.source, ...LEAD_SOURCES])].map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </Select>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lf-stage">Stage</Label>
@@ -226,7 +212,7 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
             <Button variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit">{lead ? "Save changes" : "Add lead"}</Button>
+            <Button type="submit">Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

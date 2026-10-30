@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   FileText,
   FileUp,
+  Mail,
   GitCompareArrows,
   ListChecks,
   MessageSquare,
@@ -23,6 +24,7 @@ import { cn, relativeTime } from "@/lib/utils";
 import { MemberAvatar } from "./avatar";
 
 const ICON: Record<ActivityType, { icon: LucideIcon; cls: string }> = {
+  email: { icon: Mail, cls: "text-zinc-700 bg-zinc-100" },
   eligibility: { icon: ShieldCheck, cls: "text-emerald-600 bg-emerald-50" },
   document: { icon: FileUp, cls: "text-teal-600 bg-teal-50" },
   writing: { icon: PenLine, cls: "text-blue-600 bg-blue-50" },

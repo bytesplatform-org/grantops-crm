@@ -32,7 +32,8 @@ export interface Note {
 // ---------------------------------------------------------------- Leads
 
 export const LEAD_STAGES = [
-  "New Inquiry",
+  "New Lead",
+  "Contacted",
   "Discovery Scheduled",
   "Qualified",
   "Proposal Sent",
@@ -51,6 +52,9 @@ export interface LeadTask {
   done: boolean;
 }
 
+/** Where the lead discovery scraper found a prospect. */
+export type LeadSourceKind = "Federal award recipients" | "Nonprofit registry" | "Organization website" | "Local news" | "State grant list";
+
 export interface Lead {
   id: ID;
   company: string;
@@ -62,7 +66,18 @@ export interface Lead {
   location: string;
   fundingNeed: string;
   estimatedValue: number;
+  /** Human-readable source, e.g. "USAspending.gov — FY2025 award recipients". */
   source: string;
+  sourceKind: LeadSourceKind;
+  website: string;
+  /** Page the contact details were found on. */
+  foundOn: string;
+  discoveredAt: ISODate;
+  emailConfidence: "Verified" | "Likely";
+  /** Why the scraper flagged this organization. */
+  signals: string[];
+  /** Asked not to be contacted; outreach is blocked. */
+  optedOut: boolean;
   lastContact: ISODate;
   stage: LeadStage;
   nextAction: string;
@@ -443,6 +458,7 @@ export interface Task {
 }
 
 export type ActivityType =
+  | "email"
   | "eligibility"
   | "document"
   | "writing"
@@ -469,7 +485,7 @@ export interface Activity {
   createdAt: ISODate;
 }
 
-export type NotificationType = "match" | "document" | "deadline" | "review" | "submission" | "task" | "award";
+export type NotificationType = "match" | "document" | "deadline" | "review" | "submission" | "task" | "award" | "email";
 
 export interface AppNotification {
   id: ID;
@@ -533,11 +549,50 @@ export interface Settings {
   deadlineReminderDays: number;
 }
 
+// ---------------------------------------------------------------- Lead email (simulated)
+
+export interface EmailMessage {
+  id: ID;
+  threadId: ID;
+  leadId: ID;
+  direction: "outbound" | "inbound";
+  fromName: string;
+  fromEmail: string;
+  toName: string;
+  toEmail: string;
+  subject: string;
+  body: string;
+  sentAt: ISODate;
+  read: boolean;
+  /** Team member who sent an outbound message. */
+  senderId?: ID;
+}
+
+export type ReplyKind = "interested" | "question" | "not-now" | "opt-out";
+
+/** A simulated reply that will "arrive" once dueAt passes while the app is open. */
+export interface PendingReply {
+  id: ID;
+  leadId: ID;
+  threadId: ID;
+  kind: ReplyKind;
+  dueAt: ISODate;
+}
+
+export interface LeadDiscoveryState {
+  lastRunAt: ISODate;
+  /** Prospect-pool keys already turned into leads. */
+  discoveredKeys: string[];
+}
+
 export interface AppData {
   version: number;
   seededAt: ISODate;
   team: TeamMember[];
   leads: Lead[];
+  emails: EmailMessage[];
+  pendingReplies: PendingReply[];
+  leadDiscovery: LeadDiscoveryState;
   clients: Client[];
   contacts: Contact[];
   opportunities: Opportunity[];
