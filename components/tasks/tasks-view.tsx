@@ -66,16 +66,16 @@ export function TasksView() {
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search tasks, grants, clients…" className="pl-8" />
           </div>
-          <Select value={owner} onChange={(e) => setOwner(e.target.value)} className="w-44" aria-label="Filter by owner">
+          <Select value={owner} onValueChange={setOwner} className="w-44" aria-label="Filter by owner">
             <option value="">All owners</option>
             {data.team.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
             <option value="client">Client</option>
           </Select>
-          <Select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-36" aria-label="Filter by priority">
+          <Select value={priority} onValueChange={setPriority} className="w-36" aria-label="Filter by priority">
             <option value="">All priorities</option>
             {["Urgent", "High", "Medium", "Low"].map((p) => <option key={p}>{p}</option>)}
           </Select>
-          <Select value={status} onChange={(e) => setStatus(e.target.value)} className="w-36" aria-label="Filter by status">
+          <Select value={status} onValueChange={setStatus} className="w-36" aria-label="Filter by status">
             <option value="">All statuses</option>
             {["To Do", "In Progress", "Done"].map((p) => <option key={p}>{p}</option>)}
           </Select>

@@ -78,7 +78,7 @@ export function AddTaskDialog() {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>Application</Label>
-              <Select value={appId} onChange={(e) => { setAppId(e.target.value); const a = data.applications.find((x) => x.id === e.target.value); if (a) setClientId(a.clientId); }}>
+              <Select value={appId} onValueChange={(v) => { setAppId(v); const a = data.applications.find((x) => x.id === v); if (a) setClientId(a.clientId); }}>
                 <option value="">None</option>
                 {data.applications.map((a) => (
                   <option key={a.id} value={a.id}>{data.opportunities.find((o) => o.id === a.opportunityId)?.title}</option>
@@ -87,7 +87,7 @@ export function AddTaskDialog() {
             </div>
             <div className="space-y-1.5">
               <Label>Client</Label>
-              <Select value={clientId} onChange={(e) => setClientId(e.target.value)} disabled={!!appId}>
+              <Select value={clientId} onValueChange={setClientId} disabled={!!appId}>
                 <option value="">None</option>
                 {data.clients.map((c) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
@@ -96,7 +96,7 @@ export function AddTaskDialog() {
             </div>
             <div className="space-y-1.5">
               <Label>Owner</Label>
-              <Select value={owner} onChange={(e) => setOwner(e.target.value)}>
+              <Select value={owner} onValueChange={setOwner}>
                 {data.team.map((t) => (
                   <option key={t.id} value={t.id}>{t.name}</option>
                 ))}
@@ -109,13 +109,13 @@ export function AddTaskDialog() {
             </div>
             <div className="space-y-1.5">
               <Label>Priority</Label>
-              <Select value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)}>
+              <Select value={priority} onValueChange={(v) => setPriority(v as TaskPriority)}>
                 {PRIORITIES.map((p) => <option key={p}>{p}</option>)}
               </Select>
             </div>
             <div className="space-y-1.5">
               <Label>Type</Label>
-              <Select value={type} onChange={(e) => setType(e.target.value as TaskType)}>
+              <Select value={type} onValueChange={(v) => setType(v as TaskType)}>
                 {TYPES.map((p) => <option key={p}>{p}</option>)}
               </Select>
             </div>

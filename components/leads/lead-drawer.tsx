@@ -77,9 +77,9 @@ function LeadDetail({ lead, onEdit }: { lead: Lead; onEdit: (l: Lead) => void })
               aria-label="Move stage"
               className="w-44"
               value={lead.stage}
-              onChange={(e) => {
-                moveLeadStage(lead.id, e.target.value as LeadStage);
-                toast.success(`Moved to ${e.target.value}`);
+              onValueChange={(v) => {
+                moveLeadStage(lead.id, v as LeadStage);
+                toast.success(`Moved to ${v}`);
               }}
             >
               {LEAD_STAGES.map((s) => (

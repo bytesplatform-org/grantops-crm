@@ -136,7 +136,7 @@ function ClientForm({ client, onDone, onCreated }: { client?: Client; onDone: ()
           {field("name", "Company name *", { span: true })}
           <div className="space-y-1.5">
             <Label htmlFor="cf-org">Organization type</Label>
-            <Select id="cf-org" value={form.organizationType} onChange={(e) => set("organizationType", e.target.value as OrganizationType)}>
+            <Select id="cf-org" value={form.organizationType} onValueChange={(v) => set("organizationType", v as OrganizationType)}>
               {ORG_TYPES.map((o) => (
                 <option key={o}>{o}</option>
               ))}
@@ -151,7 +151,7 @@ function ClientForm({ client, onDone, onCreated }: { client?: Client; onDone: ()
           {field("certifications", "Certifications", { placeholder: "WOSB, Small Business" })}
           <div className="space-y-1.5">
             <Label htmlFor="cf-status">Client status</Label>
-            <Select id="cf-status" value={form.status} onChange={(e) => set("status", e.target.value as ClientStatus)}>
+            <Select id="cf-status" value={form.status} onValueChange={(v) => set("status", v as ClientStatus)}>
               {STATUSES.map((s) => (
                 <option key={s}>{s}</option>
               ))}

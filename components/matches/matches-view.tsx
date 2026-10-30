@@ -90,7 +90,7 @@ export function MatchesView() {
           <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search matches…" className="pl-8" aria-label="Search matches" />
         </div>
-        <Select value={clientFilter} onChange={(e) => setParam("client", e.target.value)} className="w-48" aria-label="Client">
+        <Select value={clientFilter} onValueChange={(v) => setParam("client", v)} className="w-48" aria-label="Client">
           <option value="">All clients</option>
           {data.clients.map((c) => (
             <option key={c.id} value={c.id}>
@@ -98,13 +98,13 @@ export function MatchesView() {
             </option>
           ))}
         </Select>
-        <Select value={rec} onChange={(e) => setRec(e.target.value as MatchRecommendation | "")} className="w-44" aria-label="Recommendation">
+        <Select value={rec} onValueChange={(v) => setRec(v as MatchRecommendation | "")} className="w-44" aria-label="Recommendation">
           <option value="">All recommendations</option>
           {RECS.map((r) => (
             <option key={r}>{r}</option>
           ))}
         </Select>
-        <Select value={status} onChange={(e) => setStatus(e.target.value)} className="w-40" aria-label="Status">
+        <Select value={status} onValueChange={setStatus} className="w-40" aria-label="Status">
           <option value="">All statuses</option>
           {["New", "Reviewing", "Application Started", "Dismissed"].map((s) => (
             <option key={s}>{s}</option>
@@ -124,7 +124,7 @@ export function MatchesView() {
             </label>
           </PopoverContent>
         </Popover>
-        <Select value={sort} onChange={(e) => setSort(e.target.value as "score" | "deadline")} className="w-40" aria-label="Sort">
+        <Select value={sort} onValueChange={(v) => setSort(v as "score" | "deadline")} className="w-40" aria-label="Sort">
           <option value="score">Sort: Best match</option>
           <option value="deadline">Sort: Deadline</option>
         </Select>

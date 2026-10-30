@@ -38,7 +38,7 @@ export function PipelineTrend({ data }: { data: AppData }) {
     <Card className="flex flex-col">
       <CardHeader className="items-center">
         <CardTitle>Pipeline Value Trend</CardTitle>
-        <Select aria-label="Metric" value={metric} onChange={(e) => setMetric(e.target.value as TrendMetric)} className="h-9 w-auto rounded-[10px] text-[13px]">
+        <Select aria-label="Metric" value={metric} onValueChange={(v) => setMetric(v as TrendMetric)} className="h-9 w-auto rounded-[10px] text-[13px]">
           <option value="value">Funding requested</option>
           <option value="count">Applications</option>
         </Select>

@@ -131,7 +131,7 @@ export function RequestDocumentsDialog({ applicationId, trigger }: { application
           <div className="space-y-3">
             <div className="space-y-1.5">
               <Label>Application</Label>
-              <Select value={appId} onChange={(e) => pickApp(e.target.value)}>
+              <Select value={appId} onValueChange={(v) => pickApp(v)}>
                 <option value="">Select an application…</option>
                 {apps.map((a) => (
                   <option key={a.id} value={a.id}>

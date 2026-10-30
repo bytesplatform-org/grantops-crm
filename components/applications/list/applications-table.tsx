@@ -10,6 +10,7 @@ import { APPLICATION_STATUSES, type ApplicationStatus } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { changeStatus } from "./status-menu";
 import type { AppRow } from "./use-application-rows";
+import { Select } from "@/components/ui/select";
 
 export function ApplicationsTable({ rows }: { rows: AppRow[] }) {
   const router = useRouter();
@@ -61,16 +62,16 @@ export function ApplicationsTable({ rows }: { rows: AppRow[] }) {
                 )}
               </TableCell>
               <TableCell onClick={(e) => e.stopPropagation()}>
-                <select
+                <Select
                   aria-label="Status"
                   value={app.status}
-                  onChange={(e) => changeStatus(app, e.target.value as ApplicationStatus)}
+                  onValueChange={(v) => changeStatus(app, v as ApplicationStatus)}
                   className="h-8 rounded-md border border-input bg-card px-2 text-xs font-medium shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
                 >
                   {APPLICATION_STATUSES.map((s) => (
                     <option key={s}>{s}</option>
                   ))}
-                </select>
+                </Select>
               </TableCell>
             </TableRow>
           ))}

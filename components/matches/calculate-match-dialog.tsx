@@ -64,7 +64,7 @@ export function CalculateMatchDialog({
         <div className="space-y-3">
           <div className="space-y-1.5">
             <Label htmlFor="cm-client">Client</Label>
-            <Select id="cm-client" value={clientId} onChange={(e) => { setClientId(e.target.value); setResult(null); }}>
+            <Select id="cm-client" value={clientId} onValueChange={(v) => { setClientId(v); setResult(null); }}>
               <option value="">Select a client…</option>
               {data.clients.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -75,7 +75,7 @@ export function CalculateMatchDialog({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="cm-opp">Opportunity</Label>
-            <Select id="cm-opp" value={oppId} onChange={(e) => { setOppId(e.target.value); setResult(null); }}>
+            <Select id="cm-opp" value={oppId} onValueChange={(v) => { setOppId(v); setResult(null); }}>
               <option value="">Select an opportunity…</option>
               {openOpps.map((o) => (
                 <option key={o.id} value={o.id}>

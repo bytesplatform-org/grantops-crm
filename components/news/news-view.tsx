@@ -154,7 +154,7 @@ export function NewsView() {
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search headlines, agencies…" className="h-9 pl-9" />
             </div>
-            <Select aria-label="Type" value={kind} onChange={(e) => setKind(e.target.value as NewsKind | "all")} className="h-9 w-auto">
+            <Select aria-label="Type" value={kind} onValueChange={(v) => setKind(v as NewsKind | "all")} className="h-9 w-auto">
               <option value="all">All types</option>
               {KINDS.map((k) => (
                 <option key={k} value={k}>
@@ -162,7 +162,7 @@ export function NewsView() {
                 </option>
               ))}
             </Select>
-            <Select aria-label="Source" value={source} onChange={(e) => setSource(e.target.value as NewsSourceId | "all")} className="h-9 w-auto">
+            <Select aria-label="Source" value={source} onValueChange={(v) => setSource(v as NewsSourceId | "all")} className="h-9 w-auto">
               <option value="all">All sources</option>
               {(Object.keys(NEWS_SOURCES) as NewsSourceId[]).map((id) => (
                 <option key={id} value={id}>
@@ -170,7 +170,7 @@ export function NewsView() {
                 </option>
               ))}
             </Select>
-            <Select aria-label="Client" value={clientId} onChange={(e) => setClientId(e.target.value)} className="h-9 w-auto max-w-[220px]">
+            <Select aria-label="Client" value={clientId} onValueChange={setClientId} className="h-9 w-auto max-w-[220px]">
               <option value="all">Any client</option>
               {activeClients.map((c) => (
                 <option key={c.id} value={c.id}>

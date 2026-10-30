@@ -7,6 +7,7 @@ import { MemberAvatar } from "@/components/shared/avatar";
 import { LEAD_STAGE_VARIANT } from "@/components/shared/status-badge";
 import { cn, daysUntil, formatCompactCurrency, formatShortDate } from "@/lib/utils";
 import { toast } from "sonner";
+import { Select } from "@/components/ui/select";
 
 const DOT: Record<string, string> = {
   secondary: "bg-slate-400",
@@ -89,19 +90,19 @@ export function LeadBoard({ leads, onOpen }: { leads: Lead[]; onOpen: (id: strin
                         </span>
                       </span>
                     </div>
-                    <select
+                    <Select
                       aria-label={`Move ${l.company} to stage`}
                       value={l.stage}
-                      onChange={(e) => {
-                        moveLeadStage(l.id, e.target.value as LeadStage);
-                        toast.success(`${l.company} moved to ${e.target.value}`);
+                      onValueChange={(v) => {
+                        moveLeadStage(l.id, v as LeadStage);
+                        toast.success(`${l.company} moved to ${v}`);
                       }}
                       className="mt-2 h-7 w-full rounded border border-border bg-muted/50 px-1.5 text-[11px] text-slate-600 focus:outline-none focus:ring-2 focus:ring-ring/30"
                     >
                       {LEAD_STAGES.map((s) => (
                         <option key={s}>{s}</option>
                       ))}
-                    </select>
+                    </Select>
                   </div>
                 );
               })}

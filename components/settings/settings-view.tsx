@@ -141,8 +141,8 @@ export function SettingsView() {
                   className="w-40"
                   aria-label="Default applications view"
                   value={s.defaultApplicationView}
-                  onChange={(e) => {
-                    updateSettings({ defaultApplicationView: e.target.value as Settings["defaultApplicationView"] });
+                  onValueChange={(v) => {
+                    updateSettings({ defaultApplicationView: v as Settings["defaultApplicationView"] });
                     toast.success("Preference saved");
                   }}
                 >
@@ -177,7 +177,7 @@ export function SettingsView() {
                   className="w-32"
                   aria-label="Deadline reminder lead time"
                   value={String(s.deadlineReminderDays)}
-                  onChange={(e) => updateSettings({ deadlineReminderDays: Number(e.target.value) })}
+                  onValueChange={(v) => updateSettings({ deadlineReminderDays: Number(v) })}
                 >
                   {[3, 5, 7, 14, 21].map((d) => (
                     <option key={d} value={d}>

@@ -147,7 +147,7 @@ export function OpportunitiesView() {
             <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search opportunities…" className="pl-8" aria-label="Search opportunities" />
           </div>
-          <Select value={clientParam} onChange={(e) => setClient(e.target.value)} aria-label="Client" className="w-44">
+          <Select value={clientParam} onValueChange={setClient} aria-label="Client" className="w-44">
             <option value="">Any client</option>
             {data.clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -155,13 +155,13 @@ export function OpportunitiesView() {
               </option>
             ))}
           </Select>
-          <Select value={agency} onChange={(e) => setAgency(e.target.value)} aria-label="Agency" className="w-44">
+          <Select value={agency} onValueChange={setAgency} aria-label="Agency" className="w-44">
             <option value="">All agencies</option>
             {agencies.map((a) => (
               <option key={a}>{a}</option>
             ))}
           </Select>
-          <Select value={deadline} onChange={(e) => setDeadline(e.target.value)} aria-label="Deadline" className="w-44">
+          <Select value={deadline} onValueChange={setDeadline} aria-label="Deadline" className="w-44">
             {DEADLINES.map((b) => (
               <option key={b.value} value={b.value}>
                 {b.label}
@@ -177,7 +177,7 @@ export function OpportunitiesView() {
             </PopoverTrigger>
             <PopoverContent align="end" className="w-72 space-y-3 p-4">
               <FilterField label="Category">
-                <Select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Category">
+                <Select value={category} onValueChange={setCategory} aria-label="Category">
                   <option value="">All categories</option>
                   {categories.map((c) => (
                     <option key={c}>{c}</option>
@@ -185,7 +185,7 @@ export function OpportunitiesView() {
                 </Select>
               </FilterField>
               <FilterField label="Award size">
-                <Select value={funding} onChange={(e) => setFunding(e.target.value)} aria-label="Funding amount">
+                <Select value={funding} onValueChange={setFunding} aria-label="Funding amount">
                   {FUNDING_BUCKETS.map((b) => (
                     <option key={b.value} value={b.value}>
                       {b.label}
@@ -194,7 +194,7 @@ export function OpportunitiesView() {
                 </Select>
               </FilterField>
               <FilterField label="Eligibility">
-                <Select value={eligibility} onChange={(e) => setEligibility(e.target.value)} aria-label="Eligibility">
+                <Select value={eligibility} onValueChange={setEligibility} aria-label="Eligibility">
                   <option value="">Any eligibility</option>
                   {ORG_TYPES.map((o) => (
                     <option key={o}>{o}</option>
@@ -202,7 +202,7 @@ export function OpportunitiesView() {
                 </Select>
               </FilterField>
               <FilterField label="Status">
-                <Select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
+                <Select value={status} onValueChange={setStatus} aria-label="Status">
                   <option value="">Any status</option>
                   {["Posted", "Forecasted", "Closing Soon", "Closed", "Archived"].map((s) => (
                     <option key={s}>{s}</option>
@@ -215,7 +215,7 @@ export function OpportunitiesView() {
               </label>
             </PopoverContent>
           </Popover>
-          <Select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="w-40" aria-label="Sort">
+          <Select value={sort} onValueChange={(v) => setSort(v as Sort)} className="w-40" aria-label="Sort">
             <option value="deadline">Sort: Deadline</option>
             <option value="ceiling">Sort: Award size</option>
             <option value="match">Sort: Best match</option>

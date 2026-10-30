@@ -95,7 +95,7 @@ function ContactForm({ clientId, onDone }: { clientId: string; onDone: () => voi
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="ct-role">Role</Label>
-          <Select id="ct-role" value={f.role} onChange={(e) => setF({ ...f, role: e.target.value as Contact["role"] })}>
+          <Select id="ct-role" value={f.role} onValueChange={(v) => setF({ ...f, role: v as Contact["role"] })}>
             {ROLES.map((r) => (
               <option key={r}>{r}</option>
             ))}

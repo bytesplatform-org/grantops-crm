@@ -149,7 +149,7 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lf-org">Organization type</Label>
-              <Select id="lf-org" value={form.organizationType} onChange={(e) => set("organizationType", e.target.value as OrganizationType)}>
+              <Select id="lf-org" value={form.organizationType} onValueChange={(v) => set("organizationType", v as OrganizationType)}>
                 {ORG_TYPES.map((o) => (
                   <option key={o}>{o}</option>
                 ))}
@@ -169,7 +169,7 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lf-source">Lead source</Label>
-              <Select id="lf-source" value={form.source} onChange={(e) => set("source", e.target.value)}>
+              <Select id="lf-source" value={form.source} onValueChange={(v) => set("source", v)}>
                 {[...new Set([form.source, ...LEAD_SOURCES])].map((s) => (
                   <option key={s}>{s}</option>
                 ))}
@@ -177,7 +177,7 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lf-stage">Stage</Label>
-              <Select id="lf-stage" value={form.stage} onChange={(e) => set("stage", e.target.value as LeadStage)}>
+              <Select id="lf-stage" value={form.stage} onValueChange={(v) => set("stage", v as LeadStage)}>
                 {LEAD_STAGES.map((s) => (
                   <option key={s}>{s}</option>
                 ))}
@@ -185,7 +185,7 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lf-owner">Owner</Label>
-              <Select id="lf-owner" value={form.ownerId} onChange={(e) => set("ownerId", e.target.value)}>
+              <Select id="lf-owner" value={form.ownerId} onValueChange={(v) => set("ownerId", v)}>
                 {data.team.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.name}
@@ -211,7 +211,7 @@ export function LeadFormDialog({ open, onOpenChange, lead }: { open: boolean; on
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lf-prop">Proposal status</Label>
-              <Select id="lf-prop" value={form.proposalStatus} onChange={(e) => set("proposalStatus", e.target.value as ProposalStatus)}>
+              <Select id="lf-prop" value={form.proposalStatus} onValueChange={(v) => set("proposalStatus", v as ProposalStatus)}>
                 {PROPOSAL_STATUSES.map((s) => (
                   <option key={s}>{s}</option>
                 ))}

@@ -87,7 +87,7 @@ function ReviewPanel({ review, sections }: { review: Review; sections: string[] 
         >
           <Textarea rows={2} value={body} onChange={(e) => setBody(e.target.value)} placeholder={`Add a ${review.type.toLowerCase()} comment…`} />
           <div className="flex items-center gap-2">
-            <Select value={section} onChange={(e) => setSection(e.target.value)} className="flex-1" aria-label="Section">
+            <Select value={section} onValueChange={setSection} className="flex-1" aria-label="Section">
               <option value="">General comment</option>
               {sections.map((s) => (
                 <option key={s}>{s}</option>

@@ -11,6 +11,7 @@ import { PriorityBadge } from "@/components/shared/status-badge";
 import { toggleTaskComplete, updateTask, useAppData } from "@/lib/data-service";
 import type { Task, TaskStatus } from "@/lib/types";
 import { cn, daysUntil, formatDate } from "@/lib/utils";
+import { Select } from "@/components/ui/select";
 
 type Group = "Overdue" | "Today" | "This Week" | "Later" | "Completed";
 const GROUPS: Group[] = ["Overdue", "Today", "This Week", "Later", "Completed"];
@@ -115,11 +116,11 @@ function TaskRow({ task: t }: { task: Task }) {
       <span className="w-16 shrink-0">
         <PriorityBadge priority={t.priority} />
       </span>
-      <select
+      <Select
         aria-label="Task status"
         value={t.status}
-        onChange={(e) => {
-          const s = e.target.value as TaskStatus;
+        onValueChange={(v) => {
+          const s = v as TaskStatus;
           if (s === "Done" || done) toggleTaskComplete(t.id);
           if (s !== "Done") updateTask(t.id, { status: s });
         }}
@@ -128,7 +129,7 @@ function TaskRow({ task: t }: { task: Task }) {
         <option>To Do</option>
         <option>In Progress</option>
         <option>Done</option>
-      </select>
+      </Select>
     </li>
   );
 }

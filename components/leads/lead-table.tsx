@@ -9,6 +9,7 @@ import { moveLeadStage } from "@/lib/data-service";
 import { formatCurrency } from "@/lib/utils";
 import { EmptyState } from "@/components/shared/empty-state";
 import { UserPlus } from "lucide-react";
+import { Select } from "@/components/ui/select";
 
 export function LeadTable({
   leads,
@@ -47,19 +48,19 @@ export function LeadTable({
               <TableCell className="whitespace-nowrap text-[13px] text-muted-foreground">{l.organizationType}</TableCell>
               <TableCell className="text-right font-medium tabular">{formatCurrency(l.estimatedValue)}</TableCell>
               <TableCell onClick={(e) => e.stopPropagation()}>
-                <select
+                <Select
                   aria-label={`Stage for ${l.company}`}
                   value={l.stage}
-                  onChange={(e) => {
-                    moveLeadStage(l.id, e.target.value as LeadStage);
-                    toast.success(`${l.company} moved to ${e.target.value}`);
+                  onValueChange={(v) => {
+                    moveLeadStage(l.id, v as LeadStage);
+                    toast.success(`${l.company} moved to ${v}`);
                   }}
                   className="h-7 rounded-md border border-border bg-card px-1.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-ring/30"
                 >
                   {LEAD_STAGES.map((s) => (
                     <option key={s}>{s}</option>
                   ))}
-                </select>
+                </Select>
               </TableCell>
               <TableCell className="max-w-56 truncate text-[13px] text-muted-foreground">{l.nextAction}</TableCell>
               <TableCell onClick={(e) => e.stopPropagation()}>

@@ -5,6 +5,7 @@ import { removeBudgetItem, updateBudgetItem } from "@/lib/data-service";
 import { lineTotal } from "@/lib/selectors";
 import type { BudgetItem } from "@/lib/types";
 import { cn, formatCurrency } from "@/lib/utils";
+import { Select } from "@/components/ui/select";
 
 const cellInput = "h-7 w-full rounded-md border border-transparent bg-transparent px-2 text-[13px] hover:border-border focus:border-ring focus:bg-card focus:outline-none";
 
@@ -40,10 +41,10 @@ export function BudgetRow({ appId, item }: { appId: string; item: BudgetItem }) 
       </td>
       <td className="w-32 px-3 py-1 text-right font-medium tabular">{formatCurrency(lineTotal(item))}</td>
       <td className="w-28 px-1 py-1">
-        <select
+        <Select
           aria-label="Allowable"
           value={item.allowable}
-          onChange={(e) => set({ allowable: e.target.value as BudgetItem["allowable"] })}
+          onValueChange={(v) => set({ allowable: v as BudgetItem["allowable"] })}
           className={cn(
             "h-7 rounded-md border px-1.5 text-xs font-medium focus:outline-none",
             item.allowable === "Yes" && "border-emerald-200 bg-emerald-50 text-emerald-700",
@@ -54,7 +55,7 @@ export function BudgetRow({ appId, item }: { appId: string; item: BudgetItem }) 
           <option>Yes</option>
           <option>Review</option>
           <option>No</option>
-        </select>
+        </Select>
       </td>
       <td className="px-1 py-1">
         <CommitInput key={`n${item.notes}`} label="Notes" value={item.notes} onCommit={(v) => set({ notes: v })} className="text-muted-foreground" />

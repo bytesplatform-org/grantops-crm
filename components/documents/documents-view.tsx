@@ -113,19 +113,19 @@ export function DocumentsView() {
               <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search documents…" className="pl-8" />
             </div>
-            <Select value={client} onChange={(e) => setClient(e.target.value)} className="w-48" aria-label="Filter by client">
+            <Select value={client} onValueChange={setClient} className="w-48" aria-label="Filter by client">
               <option value="">All clients</option>
               {data.clients.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </Select>
-            <Select value={category} onChange={(e) => setCategory(e.target.value)} className="w-44" aria-label="Filter by category">
+            <Select value={category} onValueChange={setCategory} className="w-44" aria-label="Filter by category">
               <option value="">All categories</option>
               {DOCUMENT_CATEGORIES.map((c) => (
                 <option key={c}>{c}</option>
               ))}
             </Select>
-            <Select value={status} onChange={(e) => setStatus(e.target.value)} className="w-36" aria-label="Filter by status">
+            <Select value={status} onValueChange={setStatus} className="w-36" aria-label="Filter by status">
               <option value="">All statuses</option>
               {STATUSES.map((s) => (
                 <option key={s}>{s}</option>

@@ -106,15 +106,15 @@ export function SectionEditor({ app, section, onTextChange }: { app: Application
             <Select
               aria-label="Section status"
               value={section.status}
-              onChange={(e) => {
-                updateSection(app.id, section.id, { status: e.target.value as SectionStatus }, { log: `${section.title} marked ${e.target.value}.` });
-                toast.success(`Status set to ${e.target.value}`);
+              onValueChange={(v) => {
+                updateSection(app.id, section.id, { status: v as SectionStatus }, { log: `${section.title} marked ${v}.` });
+                toast.success(`Status set to ${v}`);
               }}
               className="w-36"
             >
               {STATUSES.map((s) => <option key={s}>{s}</option>)}
             </Select>
-            <Select aria-label="Assignee" value={section.assigneeId} onChange={(e) => updateSection(app.id, section.id, { assigneeId: e.target.value })} className="w-44">
+            <Select aria-label="Assignee" value={section.assigneeId} onValueChange={(v) => updateSection(app.id, section.id, { assigneeId: v })} className="w-44">
               {data.team.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </Select>
           </div>

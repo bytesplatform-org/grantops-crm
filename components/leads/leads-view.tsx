@@ -95,19 +95,19 @@ export function LeadsView() {
           <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search leads…" className="pl-8" aria-label="Search leads" />
         </div>
-        <Select value={stage} onChange={(e) => setStage(e.target.value)} className="w-44" aria-label="Filter by stage">
+        <Select value={stage} onValueChange={setStage} className="w-44" aria-label="Filter by stage">
           <option value="all">All stages</option>
           {LEAD_STAGES.map((s) => (
             <option key={s}>{s}</option>
           ))}
         </Select>
-        <Select value={orgType} onChange={(e) => setOrgType(e.target.value)} className="w-48" aria-label="Filter by organization type">
+        <Select value={orgType} onValueChange={setOrgType} className="w-48" aria-label="Filter by organization type">
           <option value="all">All org types</option>
           {ORG_TYPES.map((s) => (
             <option key={s}>{s}</option>
           ))}
         </Select>
-        <Select value={owner} onChange={(e) => setOwner(e.target.value)} className="w-40" aria-label="Filter by owner">
+        <Select value={owner} onValueChange={setOwner} className="w-40" aria-label="Filter by owner">
           <option value="all">All owners</option>
           {data.team.map((t) => (
             <option key={t.id} value={t.id}>

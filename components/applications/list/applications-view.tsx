@@ -83,7 +83,7 @@ export function ApplicationsView() {
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search grant, client, number…" className="pl-9" />
         </div>
-        <Select value={client} onChange={(e) => setClient(e.target.value)} className="w-48" aria-label="Client">
+        <Select value={client} onValueChange={setClient} className="w-48" aria-label="Client">
           <option value="">All clients</option>
           {data.clients.map((c) => (
             <option key={c.id} value={c.id}>
@@ -91,13 +91,13 @@ export function ApplicationsView() {
             </option>
           ))}
         </Select>
-        <Select value={agency} onChange={(e) => setAgency(e.target.value)} className="w-48" aria-label="Agency">
+        <Select value={agency} onValueChange={setAgency} className="w-48" aria-label="Agency">
           <option value="">All agencies</option>
           {agencies.map((a) => (
             <option key={a}>{a}</option>
           ))}
         </Select>
-        <Select value={writer} onChange={(e) => setWriter(e.target.value)} className="w-40" aria-label="Writer">
+        <Select value={writer} onValueChange={setWriter} className="w-40" aria-label="Writer">
           <option value="">All writers</option>
           {data.team.map((t) => (
             <option key={t.id} value={t.id}>
@@ -105,7 +105,7 @@ export function ApplicationsView() {
             </option>
           ))}
         </Select>
-        <Select value={status} onChange={(e) => setStatus(e.target.value)} className="w-44" aria-label="Status">
+        <Select value={status} onValueChange={setStatus} className="w-44" aria-label="Status">
           <option value="">All statuses</option>
           {APPLICATION_STATUSES.map((s) => (
             <option key={s}>{s}</option>

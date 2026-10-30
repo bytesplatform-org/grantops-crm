@@ -79,19 +79,19 @@ export function ClientsView() {
           <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, industry, NAICS…" className="pl-8" aria-label="Search clients" />
         </div>
-        <Select value={status} onChange={(e) => setStatus(e.target.value)} className="w-36" aria-label="Filter by status">
+        <Select value={status} onValueChange={setStatus} className="w-36" aria-label="Filter by status">
           <option value="all">All statuses</option>
           {["Active", "Onboarding", "Paused", "Inactive"].map((s) => (
             <option key={s}>{s}</option>
           ))}
         </Select>
-        <Select value={orgType} onChange={(e) => setOrgType(e.target.value)} className="w-48" aria-label="Filter by organization type">
+        <Select value={orgType} onValueChange={setOrgType} className="w-48" aria-label="Filter by organization type">
           <option value="all">All org types</option>
           {ORG_TYPES.map((s) => (
             <option key={s}>{s}</option>
           ))}
         </Select>
-        <Select value={state} onChange={(e) => setState(e.target.value)} className="w-40" aria-label="Filter by state">
+        <Select value={state} onValueChange={setState} className="w-40" aria-label="Filter by state">
           <option value="all">All states</option>
           {states.map((s) => (
             <option key={s}>{s}</option>

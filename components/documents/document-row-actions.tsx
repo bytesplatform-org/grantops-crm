@@ -71,7 +71,7 @@ export function DocumentRowActions({ doc }: { doc: DocumentItem }) {
           </DialogHeader>
           <div className="space-y-1.5">
             <Label>Application</Label>
-            <Select value={target} onChange={(e) => setTarget(e.target.value)}>
+            <Select value={target} onValueChange={setTarget}>
               <option value="">Select an application…</option>
               {apps.map((a) => (
                 <option key={a.id} value={a.id}>

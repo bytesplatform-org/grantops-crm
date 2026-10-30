@@ -114,7 +114,7 @@ export function UploadDocumentsDialog({ clientId, applicationId, trigger }: { cl
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="space-y-1.5">
             <Label>Client</Label>
-            <Select value={client} disabled={!!clientId} onChange={(e) => { setClient(e.target.value); setApp(""); }}>
+            <Select value={client} disabled={!!clientId} onValueChange={(v) => { setClient(v); setApp(""); }}>
               <option value="">No client (template)</option>
               {data.clients.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -123,7 +123,7 @@ export function UploadDocumentsDialog({ clientId, applicationId, trigger }: { cl
           </div>
           <div className="space-y-1.5">
             <Label>Application</Label>
-            <Select value={app} onChange={(e) => setApp(e.target.value)} disabled={!!applicationId}>
+            <Select value={app} onValueChange={setApp} disabled={!!applicationId}>
               <option value="">Not linked</option>
               {apps.map((a) => (
                 <option key={a.id} value={a.id}>{oppTitle(a.opportunityId)}</option>
@@ -132,7 +132,7 @@ export function UploadDocumentsDialog({ clientId, applicationId, trigger }: { cl
           </div>
           <div className="space-y-1.5">
             <Label>Category</Label>
-            <Select value={category} onChange={(e) => setCategory(e.target.value as DocumentCategory)}>
+            <Select value={category} onValueChange={(v) => setCategory(v as DocumentCategory)}>
               {DOCUMENT_CATEGORIES.map((c) => (
                 <option key={c}>{c}</option>
               ))}

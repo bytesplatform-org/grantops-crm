@@ -91,19 +91,19 @@ export function ComplianceMatrix({ ctx }: { ctx: AppContext }) {
                   <MemberAvatar id={r.ownerId} showName size="xs" className="max-w-36" />
                 </TableCell>
                 <TableCell>
-                  <select
+                  <Select
                     aria-label="Requirement status"
                     value={r.status}
-                    onChange={(e) => {
-                      updateCompliance(app.id, r.id, { status: e.target.value as ComplianceStatus });
-                      toast.success(`${r.requirement}: ${e.target.value}`);
+                    onValueChange={(v) => {
+                      updateCompliance(app.id, r.id, { status: v as ComplianceStatus });
+                      toast.success(`${r.requirement}: ${v}`);
                     }}
                     className={cn("h-7 rounded-md border px-2 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30", STATUS_CLS[r.status])}
                   >
                     {STATUSES.map((st) => (
                       <option key={st}>{st}</option>
                     ))}
-                  </select>
+                  </Select>
                 </TableCell>
               </TableRow>
             ))}
@@ -175,7 +175,7 @@ function AddRequirementDialog({ open, onOpenChange, appId, team }: { open: boole
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="sec">Assigned section</Label>
-              <Select id="sec" value={section} onChange={(e) => setSection(e.target.value)}>
+              <Select id="sec" value={section} onValueChange={setSection}>
                 {["Documents", "Project Description", "Budget", "Federal Forms", "Evaluation Plan", "Organizational Capacity", "Eligibility"].map((x) => (
                   <option key={x}>{x}</option>
                 ))}
@@ -184,7 +184,7 @@ function AddRequirementDialog({ open, onOpenChange, appId, team }: { open: boole
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="own">Owner</Label>
-            <Select id="own" value={owner} onChange={(e) => setOwner(e.target.value)}>
+            <Select id="own" value={owner} onValueChange={setOwner}>
               {team.map((t) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
