@@ -166,7 +166,7 @@ function ClientForm({ client, onDone, onCreated }: { client?: Client; onDone: ()
           </div>
           {!client && (
             <>
-              <div className="sm:col-span-2 border-t border-border pt-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Primary contact</div>
+              <div className="sm:col-span-2 border-t border-border pt-3 text-[13px] font-medium text-muted-foreground">Primary contact</div>
               {field("contactName", "Name *")}
               {field("contactTitle", "Title")}
               {field("contactEmail", "Email", { type: "email" })}

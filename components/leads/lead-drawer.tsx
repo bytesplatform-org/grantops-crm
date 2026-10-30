@@ -23,7 +23,7 @@ function Section({ title, children, action }: { title: string; children: React.R
   return (
     <section className="border-b border-border px-6 py-5 last:border-0">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+        <h3 className="text-[13px] font-medium text-muted-foreground">{title}</h3>
         {action}
       </div>
       {children}

@@ -48,10 +48,10 @@ export function WritingWorkspace() {
           </Button>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="truncate text-base font-semibold tracking-tight">Writing Workspace</h1>
+              <h1 className="truncate text-[15px] font-semibold tracking-tight">Writing Workspace</h1>
               <ApplicationStatusBadge status={app.status} />
             </div>
-            <div className="truncate text-xs text-muted-foreground">
+            <div className="truncate text-[13px] text-muted-foreground">
               {opportunity?.title} · {client?.name}
             </div>
           </div>
@@ -80,9 +80,9 @@ export function WritingWorkspace() {
           </Button>
         </div>
       </div>
-      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[264px_minmax(0,1fr)_320px]">
+      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[248px_minmax(0,1fr)_288px]">
         <Card className="min-h-0 overflow-hidden">
-          <SectionNav app={app} client={client} opportunity={opportunity} activeId={section.id} onSelect={(s) => go(app.sections.indexOf(s))} />
+          <SectionNav app={app} activeId={section.id} onSelect={(s) => go(app.sections.indexOf(s))} />
         </Card>
         <div className="min-h-0 overflow-y-auto scrollbar-thin">
           <SectionEditor key={section.id} app={app} section={section} onTextChange={(text) => setLive({ id: section.id, text })} />

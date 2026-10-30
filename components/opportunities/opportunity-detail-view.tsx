@@ -1,6 +1,6 @@
 "use client";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CalendarClock, ExternalLink, Star, Users } from "lucide-react";
+import { ExternalLink, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -43,51 +43,48 @@ export function OpportunityDetailView() {
   const facts = [
     { label: "Deadline", value: formatDate(opp.deadline), sub: days < 0 ? "Closed" : daysLeftLabel(opp.deadline), subCls: deadlineTone(opp.deadline) },
     { label: "Funding Range", value: `${formatCompactCurrency(opp.awardFloor)} – ${formatCompactCurrency(opp.awardCeiling)}`, sub: `${formatCompactCurrency(opp.estimatedFunding)} program total` },
-    { label: "Opportunity Number", value: opp.opportunityNumber, sub: `Assistance Listing ${opp.assistanceListing}`, mono: true },
     { label: "Cost Share", value: opp.costSharePct ? `${opp.costSharePct}%` : "None", sub: opp.instrument },
     { label: "Potential Matches", value: String(matchCount), sub: analyzed ? "NOFO analyzed" : "NOFO not yet analyzed", subCls: analyzed ? "text-emerald-700" : "text-amber-700" },
   ];
 
   return (
-    <div>
-      <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-white">{opp.agencyCode}</span>
-            <span className="text-sm text-muted-foreground">
+          <h1 className="text-[22px] font-semibold leading-tight tracking-tight">{opp.title}</h1>
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground">
+            <span>
               {opp.agency} · {opp.subAgency}
             </span>
             <OpportunityStatusBadge status={opp.status} />
-            <DemoBadge />
-          </div>
-          <h1 className="mt-2 text-[22px] font-semibold leading-tight tracking-tight">{opp.title}</h1>
-          <div className="mt-1.5 flex items-center gap-1.5 text-sm text-muted-foreground">
-            <CalendarClock className="size-4" /> Closes {formatDate(opp.deadline)} at 11:59 p.m. ET
+            <Tooltip content="Fictional sample opportunity — not a live Grants.gov listing.">
+              <span>
+                <DemoBadge />
+              </span>
+            </Tooltip>
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-2">
-          <Button variant="outline" onClick={() => toggleSaveOpportunity(opp.id)} aria-pressed={opp.saved}>
-            <Star className={cn(opp.saved && "fill-amber-400 text-amber-500")} /> {opp.saved ? "Saved" : "Save"}
+          <Button variant="outline" size="icon" onClick={() => toggleSaveOpportunity(opp.id)} aria-pressed={opp.saved} aria-label={opp.saved ? "Unsave opportunity" : "Save opportunity"}>
+            <Star className={cn(opp.saved && "fill-amber-400 text-amber-500")} />
           </Button>
-          <Tooltip content="Demo data — this sample opportunity is not a live Grants.gov listing.">
-            <Button variant="outline" asChild>
-              <a href="https://www.grants.gov/" target="_blank" rel="noopener noreferrer">
-                View on Grants.gov <ExternalLink />
-              </a>
-            </Button>
-          </Tooltip>
+          <Button variant="outline" asChild>
+            <a href="https://www.grants.gov/" target="_blank" rel="noopener noreferrer">
+              Grants.gov <ExternalLink />
+            </a>
+          </Button>
           <Button onClick={() => runMatchClients(opp.id, opp.title, (h) => router.push(h))}>
             <Users /> Match Clients
           </Button>
         </div>
       </div>
 
-      <Card className="mb-5 grid grid-cols-2 divide-border md:grid-cols-5 md:divide-x">
+      <Card className="grid grid-cols-2 divide-border md:grid-cols-4 md:divide-x">
         {facts.map((f) => (
-          <div key={f.label} className="px-5 py-3.5">
-            <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{f.label}</div>
-            <div className={cn("mt-1 truncate text-[15px] font-semibold tabular", f.mono && "font-mono text-[13px]")}>{f.value}</div>
-            <div className={cn("mt-0.5 truncate text-xs text-muted-foreground", f.subCls)}>{f.sub}</div>
+          <div key={f.label} className="px-5 py-4">
+            <div className="text-[13px] text-muted-foreground">{f.label}</div>
+            <div className="mt-1 truncate text-[15px] font-medium tabular">{f.value}</div>
+            <div className={cn("mt-0.5 truncate text-[13px] text-muted-foreground", f.subCls)}>{f.sub}</div>
           </div>
         ))}
       </Card>
@@ -98,7 +95,7 @@ export function OpportunityDetailView() {
             <TabsTrigger key={t.value} value={t.value}>
               {t.label}
               {t.value === "nofo" && !analyzed && <span className="size-1.5 rounded-full bg-amber-500" />}
-              {t.value === "matches" && <span className="rounded bg-muted px-1.5 text-[10px] font-semibold tabular">{matchCount}</span>}
+              {t.value === "matches" && <span className="text-[12px] text-muted-foreground tabular">{matchCount}</span>}
             </TabsTrigger>
           ))}
         </TabsList>

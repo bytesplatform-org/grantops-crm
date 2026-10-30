@@ -4,7 +4,7 @@ import type { AppData } from "@/lib/types";
 import { ACTIVE_STATUSES, pipelineByStage } from "@/lib/selectors";
 import { formatCompactCurrency, formatCurrency } from "@/lib/utils";
 
-const STAGE_COLORS = ["#cbd5e1", "#93c5fd", "#1f4fd1", "#7c3aed", "#f59e0b", "#334155", "#059669"];
+const STAGE_COLORS = ["#d4d4d8", "#e0f59b", "#202327", "#7c3aed", "#f59e0b", "#334155", "#059669"];
 
 interface TipProps {
   active?: boolean;
@@ -53,7 +53,7 @@ export function outcomeRows(data: AppData) {
   const lost = apps.filter((a) => a.status === "Not Awarded");
   return [
     { name: "Awarded", count: awarded.length, amount: awarded.reduce((s, a) => s + (a.outcome?.amountAwarded ?? a.fundingRequested), 0), color: "#059669" },
-    { name: "Pending", count: pending.length, amount: sum(pending), color: "#1f4fd1" },
+    { name: "Pending", count: pending.length, amount: sum(pending), color: "#202327" },
     { name: "Not Awarded", count: lost.length, amount: sum(lost), color: "#e2e8f0" },
   ];
 }

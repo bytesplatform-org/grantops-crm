@@ -1,8 +1,7 @@
 "use client";
-import Link from "next/link";
 import { CalendarClock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import type { Application, ApplicationSection, Client, Opportunity, SectionStatus } from "@/lib/types";
+import type { Application, ApplicationSection, SectionStatus } from "@/lib/types";
 import { cn, daysLeftLabel, formatDate, wordCount } from "@/lib/utils";
 
 export const STATUS_DOT: Record<SectionStatus, string> = {
@@ -14,14 +13,10 @@ export const STATUS_DOT: Record<SectionStatus, string> = {
 
 export function SectionNav({
   app,
-  client,
-  opportunity,
   activeId,
   onSelect,
 }: {
   app: Application;
-  client?: Client;
-  opportunity?: Opportunity;
   activeId: string;
   onSelect: (s: ApplicationSection) => void;
 }) {
@@ -29,12 +24,7 @@ export function SectionNav({
   return (
     <div className="flex h-full flex-col">
       <div className="border-b border-border p-4">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{opportunity?.agency}</div>
-        <Link href={`/applications/${app.id}`} className="mt-1 block text-sm font-semibold leading-snug hover:text-primary">
-          {opportunity?.title}
-        </Link>
-        <div className="mt-1 text-xs text-muted-foreground">{client?.name}</div>
-        <div className="mt-3 flex items-center gap-1.5 text-xs">
+        <div className="flex items-center gap-1.5 text-[13px]">
           <CalendarClock className="size-3.5 text-muted-foreground" />
           <span>{formatDate(app.deadline)}</span>
           <span className="text-muted-foreground">· {daysLeftLabel(app.deadline)}</span>
@@ -50,7 +40,7 @@ export function SectionNav({
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto p-2 scrollbar-thin" aria-label="Grant sections">
-        <div className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Grant sections</div>
+        <div className="px-2 pb-1 pt-1 text-[12px] font-medium text-muted-foreground">Sections</div>
         <ul className="space-y-0.5">
           {app.sections.map((s, i) => {
             const words = wordCount(s.content);
@@ -60,16 +50,16 @@ export function SectionNav({
               <li key={s.id}>
                 <button
                   onClick={() => onSelect(s)}
-                  className={cn("flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors", active ? "bg-primary-soft" : "hover:bg-muted")}
+                  className={cn("flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors", active ? "bg-zinc-100" : "hover:bg-zinc-50")}
                   aria-current={active ? "true" : undefined}
                 >
                   <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", STATUS_DOT[s.status])} title={s.status} />
                   <span className="min-w-0 flex-1">
-                    <span className={cn("block truncate text-[13px]", active ? "font-semibold text-primary" : "font-medium")}>
+                    <span className={cn("block truncate text-[13px]", active ? "font-medium text-foreground" : "text-zinc-700")}>
                       {i + 1}. {s.title}
                     </span>
                     <span className={cn("block text-[11px] tabular", over ? "text-red-600" : "text-muted-foreground")}>
-                      {words.toLocaleString()} / {s.wordLimit.toLocaleString()} words · {s.status}
+                      {words.toLocaleString()} / {s.wordLimit.toLocaleString()} words
                     </span>
                   </span>
                 </button>

@@ -40,7 +40,7 @@ export function buildEvents(data: AppData): CalendarEvent[] {
   for (const r of data.reviews) {
     const a = data.applications.find((x) => x.id === r.applicationId);
     if (r.status === "Approved" || !a || closed.has(a.status)) continue;
-    out.push({ id: `r-${r.id}`, kind: "review", date: new Date(r.dueDate), title: `${r.type}: ${title(r.applicationId)}`, subtitle: clientOf(a.clientId), href: `/applications/${r.applicationId}?tab=reviews` });
+    out.push({ id: `r-${r.id}`, kind: "review", date: new Date(r.dueDate), title: `${r.type}: ${title(r.applicationId)}`, subtitle: clientOf(a.clientId), href: `/applications/${r.applicationId}` });
   }
   for (const t of data.tasks) {
     out.push({ id: `t-${t.id}`, kind: "task", date: new Date(t.dueDate), title: t.title, subtitle: clientOf(t.clientId), href: t.applicationId ? `/applications/${t.applicationId}` : "/tasks", done: t.status === "Done" });

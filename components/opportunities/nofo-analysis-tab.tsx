@@ -96,7 +96,7 @@ export function NofoAnalysisTab({ opp }: { opp: Opportunity }) {
 
   return (
     <div className="space-y-4">
-      <Card className="border-blue-200/80">
+      <Card className="border-lime-300">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2.5">
             <span className="flex size-7 items-center justify-center rounded-md bg-primary-soft text-primary">
@@ -117,7 +117,7 @@ export function NofoAnalysisTab({ opp }: { opp: Opportunity }) {
         <CardContent>
           <p className="text-[15px] leading-relaxed text-slate-800">{analysis.summary}</p>
           <div className="mt-4 rounded-lg border border-border bg-muted/40 p-4">
-            <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Key requirements</div>
+            <div className="mb-2 text-[13px] font-medium text-foreground">Key requirements</div>
             <ul className="grid gap-1.5 md:grid-cols-2">
               {analysis.keyRequirements.map((r) => (
                 <li key={r} className="flex items-start gap-2 text-sm">
@@ -143,7 +143,7 @@ export function NofoAnalysisTab({ opp }: { opp: Opportunity }) {
             ]}
           />
           <div className="mt-5 border-t border-border pt-4">
-            <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Program Purpose</div>
+            <div className="text-[13px] text-muted-foreground">Program Purpose</div>
             <p className="mt-1 text-sm text-slate-700">{analysis.programPurpose}</p>
           </div>
         </CardContent>

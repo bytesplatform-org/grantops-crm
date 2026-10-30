@@ -49,23 +49,21 @@ export function MatchDetail({ match }: { match: GrantMatch }) {
     <Card className="overflow-hidden">
       <div className="border-b border-border p-5">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-          <div className={cn("flex flex-col items-center rounded-xl px-4 py-3", style.bg)}>
-            <ScoreRing score={match.score} size={92} stroke={7} />
-            <span className={cn("mt-1 text-[11px] font-semibold uppercase tracking-wide", style.text)}>Potential Match</span>
+          <div className={cn("flex flex-col items-center rounded-2xl px-4 py-3", style.bg)}>
+            <ScoreRing score={match.score} size={80} stroke={6} />
+            <span className={cn("mt-1 text-[12px] font-medium", style.text)}>Potential match</span>
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <RecommendationBadge value={match.recommendation} className="px-2 py-1 text-xs" />
+              <RecommendationBadge value={match.recommendation} />
               {dismissed && <Badge variant="secondary">Dismissed</Badge>}
               {match.status === "Application Started" && <Badge variant="success">Application started</Badge>}
               {match.status === "Reviewing" && <Badge variant="info">Go/No-Go in review</Badge>}
             </div>
-            <Link href={`/opportunities/${opp.id}`} className="mt-2 block text-lg font-semibold leading-snug tracking-tight hover:text-primary">
+            <Link href={`/opportunities/${opp.id}`} className="mt-2 block text-[17px] font-semibold leading-snug tracking-tight hover:text-primary">
               {opp.title}
             </Link>
-            <div className="mt-0.5 text-sm text-muted-foreground">
-              {opp.agency} · {opp.opportunityNumber}
-            </div>
+            <div className="mt-0.5 text-[13px] text-muted-foreground">{opp.agency}</div>
             <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               <span>
                 <span className="text-muted-foreground">Client </span>
@@ -79,10 +77,6 @@ export function MatchDetail({ match }: { match: GrantMatch }) {
                   {formatCompactCurrency(opp.awardFloor)}–{formatCompactCurrency(opp.awardCeiling)}
                 </span>
               </span>
-              <span>
-                <span className="text-muted-foreground">Cost share </span>
-                <span className="font-medium">{opp.costSharePct ? `${opp.costSharePct}%` : "None"}</span>
-              </span>
             </div>
           </div>
           <div className="shrink-0">
@@ -91,9 +85,9 @@ export function MatchDetail({ match }: { match: GrantMatch }) {
         </div>
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
           {summary.map((s) => (
-            <div key={s.label} className="rounded-md border border-border bg-muted/30 px-3 py-2">
-              <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{s.label}</div>
-              <div className={cn("mt-0.5 text-sm font-semibold", s.cls)}>{s.value}</div>
+            <div key={s.label} className="rounded-lg border border-border px-3 py-2">
+              <div className="truncate text-[12px] text-muted-foreground">{s.label}</div>
+              <div className={cn("mt-0.5 text-sm font-medium", s.cls)}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -101,13 +95,13 @@ export function MatchDetail({ match }: { match: GrantMatch }) {
 
       <div className="grid gap-0 lg:grid-cols-[1.1fr_1fr]">
         <div className="border-b border-border p-5 lg:border-b-0 lg:border-r">
-          <h4 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">Score Breakdown</h4>
+          <h4 className="mb-3 text-[15px] font-medium text-foreground">Score Breakdown</h4>
           <div className="space-y-3">
             {(Object.keys(BREAKDOWN_LABELS) as (keyof MatchBreakdown)[]).map((k) => (
               <div key={k}>
                 <div className="mb-1 flex items-center justify-between text-sm">
                   <span className="text-slate-700">{BREAKDOWN_LABELS[k]}</span>
-                  <span className="font-semibold tabular">{b[k]}%</span>
+                  <span className="text-[13px] text-muted-foreground tabular">{b[k]}%</span>
                 </div>
                 <ScoreBar value={b[k]} />
               </div>
@@ -116,7 +110,7 @@ export function MatchDetail({ match }: { match: GrantMatch }) {
         </div>
         <div className="space-y-5 p-5">
           <div>
-            <h4 className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">Why it fits</h4>
+            <h4 className="mb-2 text-[15px] font-medium text-foreground">Why it fits</h4>
             <ul className="space-y-1.5">
               {match.reasons.map((r) => (
                 <li key={r} className="flex items-start gap-2 text-sm">
@@ -127,7 +121,7 @@ export function MatchDetail({ match }: { match: GrantMatch }) {
             </ul>
           </div>
           <div>
-            <h4 className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">Risks to resolve</h4>
+            <h4 className="mb-2 text-[15px] font-medium text-foreground">Risks to resolve</h4>
             {match.risks.length ? (
               <ul className="space-y-1.5">
                 {match.risks.map((r) => (
@@ -142,7 +136,7 @@ export function MatchDetail({ match }: { match: GrantMatch }) {
             )}
           </div>
           {match.goNoGo && (
-            <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+            <div className="rounded-lg border border-border px-3 py-2 text-sm">
               <span className="text-muted-foreground">Go/No-Go: </span>
               <span className="font-semibold tabular">{goNoGoTotal(match.goNoGo)}/10</span>
               {match.goNoGo.approved && <span className="ml-2 text-emerald-700">· Pursuit approved</span>}
@@ -151,7 +145,7 @@ export function MatchDetail({ match }: { match: GrantMatch }) {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 border-t border-border bg-muted/30 px-5 py-3">
+      <div className="flex flex-wrap items-center gap-2 border-t border-border px-5 py-3">
         <Button variant="outline" size="sm" asChild>
           <Link href={`/opportunities/${opp.id}?tab=nofo`}>
             <FileSearch /> View Analysis

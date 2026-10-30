@@ -53,7 +53,7 @@ export function ApplicationsView() {
     <Tabs value={view} onValueChange={setView}>
       <PageHeader
         title="Applications"
-        description="Grant pipeline from eligibility through submission handoff and outcome."
+        description="Every grant from eligibility to outcome."
         actions={
           <>
             <SegmentedList>
@@ -72,8 +72,8 @@ export function ApplicationsView() {
           </>
         }
       />
-      <div className="mb-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Active Applications" value={active.length} icon={FolderKanban} hint={`${rows.length} total in workspace`} />
+      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatCard highlight label="Active Applications" value={active.length} icon={FolderKanban} hint={`${rows.length} total in workspace`} />
         <StatCard label="Active Pipeline Value" value={formatCompactCurrency(pipeline)} icon={Wallet} hint="Federal funding requested" />
         <StatCard label="Due in Next 30 Days" value={due} icon={CalendarClock} hint="Active applications" />
         <StatCard label="Avg. Completion" value={`${avg}%`} icon={Gauge} hint="Across active applications" />

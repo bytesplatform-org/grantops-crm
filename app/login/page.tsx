@@ -25,23 +25,23 @@ export default function LoginPage() {
 
   return (
     <div className="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
-      <div className="relative hidden flex-col justify-between overflow-hidden bg-sidebar p-12 text-white lg:flex">
+      <div className="relative hidden flex-col justify-between overflow-hidden bg-frame p-12 text-white lg:flex">
         <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "44px 44px" }} />
         <div className="relative flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary">
+          <div className="flex size-10 items-center justify-center rounded-lg bg-brand text-brand-foreground">
             <Landmark className="size-5" />
           </div>
           <div>
             <div className="text-lg font-semibold">{BRAND.name}</div>
-            <div className="text-xs text-sidebar-muted">{BRAND.subtitle}</div>
+            <div className="text-xs text-slate-400">{BRAND.subtitle}</div>
           </div>
         </div>
         <div className="relative max-w-md">
           <h1 className="text-3xl font-semibold leading-tight tracking-tight">The operating system for grant consultancies.</h1>
-          <p className="mt-4 text-[15px] leading-relaxed text-sidebar-foreground">
+          <p className="mt-4 text-[15px] leading-relaxed text-slate-300">
             Discover federal funding, evaluate eligibility, manage applications, and coordinate every document and review — from first match to Grants.gov handoff.
           </p>
-          <div className="mt-10 grid grid-cols-3 gap-4 border-t border-sidebar-border pt-6">
+          <div className="mt-10 grid grid-cols-3 gap-4 border-t border-slate-800 pt-6">
             {[
               ["Discovery", "Client ↔ grant matching"],
               ["Preparation", "Writing, budget & compliance"],
@@ -49,12 +49,12 @@ export default function LoginPage() {
             ].map(([t, d]) => (
               <div key={t}>
                 <div className="text-sm font-medium text-white">{t}</div>
-                <div className="mt-1 text-xs text-sidebar-muted">{d}</div>
+                <div className="mt-1 text-xs text-slate-400">{d}</div>
               </div>
             ))}
           </div>
         </div>
-        <div className="relative flex items-center gap-2 text-xs text-sidebar-muted">
+        <div className="relative flex items-center gap-2 text-xs text-slate-400">
           <ShieldCheck className="size-4" /> Demo environment · sample data only
         </div>
       </div>

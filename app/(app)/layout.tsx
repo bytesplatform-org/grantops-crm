@@ -4,9 +4,9 @@ import { PageSkeleton } from "@/components/shared/page-skeleton";
 
 function ShellFallback() {
   return (
-    <div className="flex min-h-screen">
-      <div className="hidden w-60 shrink-0 bg-sidebar lg:block" />
-      <div className="flex-1 p-8">
+    <div className="flex min-h-screen bg-frame lg:p-3">
+      <div className="hidden w-64 shrink-0 lg:block" />
+      <div className="flex-1 bg-background p-8 lg:rounded-[24px]">
         <PageSkeleton />
       </div>
     </div>

@@ -17,7 +17,7 @@ const GRANTS_GOV = "https://www.grants.gov/";
 
 export function OverviewTab({ opp }: { opp: Opportunity }) {
   return (
-    <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+    <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
       <div className="space-y-4">
         <Card>
           <CardHeader>
@@ -26,7 +26,7 @@ export function OverviewTab({ opp }: { opp: Opportunity }) {
           <CardContent>
             <p className="text-sm leading-relaxed text-slate-700">{opp.summary}</p>
             <div className="mt-4">
-              <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Keywords</div>
+              <div className="mb-1.5 text-[13px] text-muted-foreground">Keywords</div>
               <TagList items={opp.keywords} />
             </div>
           </CardContent>
@@ -87,7 +87,7 @@ export function OverviewTab({ opp }: { opp: Opportunity }) {
             </div>
           </CardContent>
         </Card>
-        <p className="px-1 text-[11px] leading-relaxed text-muted-foreground">
+        <p className="px-1 text-[12px] leading-relaxed text-muted-foreground">
           Demo Opportunity — sample data for demonstration. Always confirm details against the official announcement on Grants.gov.
         </p>
       </div>

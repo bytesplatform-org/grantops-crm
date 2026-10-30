@@ -3,8 +3,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { useAppData } from "@/lib/store";
-import { NAV, SETTINGS_NAV } from "./nav";
+import { NAV } from "./nav";
 
+const SECTION_LABELS: Record<string, string> = {
+  writing: "Writing Workspace",
+  tasks: "Tasks & Calendar",
+};
+
+/** Page title for the top bar: the section name, followed by a compact trail on nested routes. */
 export function Breadcrumbs() {
   const pathname = usePathname();
   const data = useAppData();
@@ -13,8 +19,8 @@ export function Breadcrumbs() {
   let href = "";
   parts.forEach((p, i) => {
     href += `/${p}`;
-    const nav = [...NAV, SETTINGS_NAV].find((n) => n.href === href);
-    let label = nav?.label ?? p.charAt(0).toUpperCase() + p.slice(1);
+    const nav = NAV.find((n) => n.href === href);
+    let label = nav?.label ?? SECTION_LABELS[p] ?? p.charAt(0).toUpperCase() + p.slice(1);
     if (i > 0) {
       const prev = parts[i - 1];
       if (prev === "clients") label = data.clients.find((c) => c.id === p)?.name ?? "Client";
@@ -28,15 +34,21 @@ export function Breadcrumbs() {
     }
     crumbs.push({ href, label });
   });
+  const [section, ...rest] = crumbs;
+  if (!section) return null;
   return (
-    <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1 text-[13px]">
-      <Link href="/dashboard" className="shrink-0 text-muted-foreground hover:text-foreground">
-        GrantOS
-      </Link>
-      {crumbs.map((c, i) => (
-        <span key={c.href} className="flex min-w-0 items-center gap-1">
-          <ChevronRight className="size-3.5 shrink-0 text-slate-300" />
-          {i === crumbs.length - 1 ? (
+    <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2">
+      {rest.length ? (
+        <Link href={section.href} className="shrink-0 text-xl font-bold tracking-tight text-foreground hover:text-zinc-600 lg:text-[26px]">
+          {section.label}
+        </Link>
+      ) : (
+        <span className="truncate text-xl font-bold tracking-tight text-foreground lg:text-[26px]">{section.label}</span>
+      )}
+      {rest.map((c, i) => (
+        <span key={c.href} className="hidden min-w-0 items-center gap-2 text-sm sm:flex">
+          <ChevronRight className="size-4 shrink-0 text-zinc-300" />
+          {i === rest.length - 1 ? (
             <span className="truncate font-medium text-foreground">{c.label}</span>
           ) : (
             <Link href={c.href} className="truncate text-muted-foreground hover:text-foreground">

@@ -17,8 +17,8 @@ import { FolderKanban } from "lucide-react";
 export function ClientOverviewTab({ client, apps, activities }: { client: Client; apps: Application[]; activities: Activity[] }) {
   const data = useAppData();
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
-      <div className="space-y-5">
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Business summary</CardTitle>
@@ -27,7 +27,7 @@ export function ClientOverviewTab({ client, apps, activities }: { client: Client
             <p className="text-sm leading-relaxed text-slate-700">{client.summary || "No summary yet."}</p>
             <div className="grid gap-5 md:grid-cols-2">
               <div>
-                <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Funding priorities</h4>
+                <h4 className="mb-2 text-[13px] font-medium text-muted-foreground">Funding priorities</h4>
                 <ul className="space-y-1.5 text-sm">
                   {client.fundingProfile.objectives.map((o) => (
                     <li key={o} className="flex items-center gap-2">
@@ -37,7 +37,7 @@ export function ClientOverviewTab({ client, apps, activities }: { client: Client
                 </ul>
               </div>
               <div>
-                <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Capabilities</h4>
+                <h4 className="mb-2 text-[13px] font-medium text-muted-foreground">Capabilities</h4>
                 <ul className="space-y-1.5 text-sm">
                   {client.capabilities.length ? (
                     client.capabilities.map((o) => (
@@ -52,7 +52,7 @@ export function ClientOverviewTab({ client, apps, activities }: { client: Client
               </div>
             </div>
             <div>
-              <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Service areas</h4>
+              <h4 className="mb-2 text-[13px] font-medium text-muted-foreground">Service areas</h4>
               <TagList items={client.serviceAreas} />
             </div>
           </CardContent>
@@ -64,8 +64,6 @@ export function ClientOverviewTab({ client, apps, activities }: { client: Client
           <CardContent>
             <InfoGrid
               items={[
-                { label: "Organization type", value: client.organizationType },
-                { label: "Industry", value: client.industry },
                 { label: "Year founded", value: client.yearFounded },
                 { label: "Employees", value: client.employees || "—" },
                 { label: "Annual revenue", value: client.annualRevenue },
@@ -80,7 +78,7 @@ export function ClientOverviewTab({ client, apps, activities }: { client: Client
         <Card>
           <CardHeader>
             <CardTitle>Current applications</CardTitle>
-            <Link href={`/clients/${client.id}?tab=applications`} className="text-xs font-medium text-primary hover:underline">
+            <Link href={`/clients/${client.id}?tab=applications`} className="text-[13px] font-medium text-primary hover:underline">
               View all
             </Link>
           </CardHeader>
@@ -93,7 +91,7 @@ export function ClientOverviewTab({ client, apps, activities }: { client: Client
                 <Link key={a.id} href={`/applications/${a.id}`} className="group flex items-center gap-4 rounded-md border border-border p-3 hover:bg-muted/40">
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-medium group-hover:text-primary">{opp?.title}</div>
-                    <div className="mt-0.5 text-xs text-muted-foreground">
+                    <div className="mt-0.5 text-[13px] text-muted-foreground">
                       {opp?.agency} · {formatCompactCurrency(a.fundingRequested)}
                     </div>
                   </div>
@@ -113,12 +111,9 @@ export function ClientOverviewTab({ client, apps, activities }: { client: Client
       <Card className="h-fit">
         <CardHeader>
           <CardTitle>Recent activity</CardTitle>
-          <Link href={`/clients/${client.id}?tab=activity`} className="text-xs font-medium text-primary hover:underline">
-            View all
-          </Link>
         </CardHeader>
         <CardContent>
-          <ActivityFeed items={activities} limit={8} showContext={false} />
+          <ActivityFeed items={activities} limit={12} showContext={false} />
         </CardContent>
       </Card>
     </div>

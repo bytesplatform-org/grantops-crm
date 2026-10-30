@@ -28,8 +28,8 @@ export function NotificationsMenu() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="relative flex size-9 items-center justify-center rounded-md text-slate-600 hover:bg-muted" aria-label="Notifications">
-          <Bell className="size-[18px]" />
+        <button className="relative flex size-10 items-center justify-center rounded-xl text-zinc-700 hover:bg-muted" aria-label="Notifications">
+          <Bell className="size-5" />
           {unread > 0 && (
             <span className="absolute right-1 top-1 flex min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-4 text-white">
               {unread}

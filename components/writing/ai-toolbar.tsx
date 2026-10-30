@@ -1,8 +1,8 @@
 "use client";
-import { ListChecks, Loader2, Minimize2, Sparkles, Undo2, Wand2 } from "lucide-react";
+import { ListChecks, Loader2, Undo2, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export type AiAction = "draft" | "improve" | "shorten" | "check";
+export type AiAction = "draft" | "check";
 
 export function AiToolbar({
   busy,
@@ -26,8 +26,6 @@ export function AiToolbar({
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       {btn("draft", "Generate Draft", Wand2)}
-      {btn("improve", "Improve", Sparkles, !hasText)}
-      {btn("shorten", "Shorten", Minimize2, !hasText)}
       {btn("check", "Check Requirement", ListChecks, !hasText)}
       {canUndo && (
         <Button variant="ghost" size="sm" onClick={onUndo} disabled={!!busy}>

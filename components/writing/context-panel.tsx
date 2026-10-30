@@ -2,18 +2,17 @@
 import Link from "next/link";
 import { BookOpenCheck, FileText, Lightbulb, MessageSquare, Quote } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { SectionStatusBadge } from "@/components/shared/status-badge";
 import { MemberAvatar } from "@/components/shared/avatar";
 import { RequestDocumentsDialog } from "@/components/documents/request-documents-dialog";
 import { useAppData } from "@/lib/data-service";
 import type { Application, ApplicationSection } from "@/lib/types";
-import { cn, relativeTime, wordCount } from "@/lib/utils";
+import { cn, wordCount } from "@/lib/utils";
 
 function Block({ icon: Icon, title, children }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode }) {
   return (
-    <section className="border-b border-border px-4 py-4 last:border-0">
-      <h3 className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        <Icon className="size-3.5" /> {title}
+    <section className="border-b border-border px-4 py-3 last:border-0">
+      <h3 className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+        <Icon className="size-3" /> {title}
       </h3>
       {children}
     </section>
@@ -38,13 +37,13 @@ export function ContextPanel({ app, section, liveText }: { app: Application; sec
 
   return (
     <div className="h-full overflow-y-auto scrollbar-thin">
-      <Block icon={Quote} title="NOFO Requirement">
-        <blockquote className="border-l-2 border-primary bg-primary-soft/50 py-2 pl-3 pr-2 text-[13px] leading-relaxed text-slate-800">“{section.requirement}”</blockquote>
+      <Block icon={Quote} title="NOFO requirement">
+        <blockquote className="border-l-2 border-zinc-300 py-0.5 pl-3 text-[13px] leading-relaxed text-zinc-700">“{section.requirement}”</blockquote>
       </Block>
-      <Block icon={Lightbulb} title="Writing Guidance">
+      <Block icon={Lightbulb} title="Guidance">
         <p className="text-[13px] leading-relaxed text-slate-700">{section.guidance}</p>
       </Block>
-      <Block icon={BookOpenCheck} title="Client Evidence">
+      <Block icon={BookOpenCheck} title="Client evidence">
         <ul className="space-y-1.5">
           {section.evidence.map((e) => {
             const doc = findDoc(e);
@@ -67,24 +66,15 @@ export function ContextPanel({ app, section, liveText }: { app: Application; sec
           })}
         </ul>
       </Block>
-      <Block icon={FileText} title="Word Limit">
+      <Block icon={FileText} title="Word limit">
         <div className="mb-1.5 flex items-baseline justify-between">
-          <span className={cn("text-lg font-semibold tabular", pct > 100 && "text-red-600")}>{words.toLocaleString()}</span>
+          <span className={cn("text-[15px] font-medium tabular", pct > 100 && "text-red-600")}>{words.toLocaleString()}</span>
           <span className="text-xs text-muted-foreground">of {section.wordLimit.toLocaleString()} words</span>
         </div>
         <Progress value={pct} indicatorClassName={pct > 100 ? "bg-red-500" : pct > 85 ? "bg-amber-500" : "bg-primary"} />
-        {pct > 100 && <p className="mt-1.5 text-xs text-red-600">Over limit by {(words - section.wordLimit).toLocaleString()} words — try Shorten.</p>}
+        {pct > 100 && <p className="mt-1.5 text-xs text-red-600">Over limit by {(words - section.wordLimit).toLocaleString()} words.</p>}
       </Block>
-      <Block icon={BookOpenCheck} title="Status">
-        <div className="flex items-center justify-between">
-          <SectionStatusBadge status={section.status} />
-          <span className="text-xs text-muted-foreground">Updated {relativeTime(section.updatedAt)}</span>
-        </div>
-        <div className="mt-2">
-          <MemberAvatar id={section.assigneeId} showName />
-        </div>
-      </Block>
-      <Block icon={MessageSquare} title={`Reviewer Comments (${comments.length})`}>
+      <Block icon={MessageSquare} title={`Reviewer comments (${comments.length})`}>
         {comments.length === 0 ? (
           <p className="text-[13px] text-muted-foreground">No open comments on this section.</p>
         ) : (
@@ -99,7 +89,7 @@ export function ContextPanel({ app, section, liveText }: { app: Application; sec
                 <p className="mt-1 text-[13px] leading-snug">{c.body}</p>
               </li>
             ))}
-            <Link href={`/applications/${app.id}?tab=reviews`} className="block text-xs font-medium text-primary hover:underline">
+            <Link href={`/applications/${app.id}`} className="block text-xs font-medium text-primary hover:underline">
               Open reviews →
             </Link>
           </ul>

@@ -34,7 +34,7 @@ export const APP_STATUS_COLOR: Record<ApplicationStatus, string> = {
   Researching: "#94a3b8",
   "Eligibility Confirmed": "#38bdf8",
   Preparing: "#0ea5e9",
-  Writing: "#1f4fd1",
+  Writing: "#202327",
   "Internal Review": "#7c3aed",
   "Client Review": "#a855f7",
   "Ready to Submit": "#f59e0b",

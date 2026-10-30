@@ -41,6 +41,26 @@ with API calls; components only depend on those signatures.
 
 Reset everything from **Settings → Demo Data → Reset Demo Workspace** (or the profile menu).
 
+## Grant News (live data)
+
+`/news` is the one module that reads live public data. Everything else is sample data.
+
+| File | Purpose |
+| --- | --- |
+| `app/api/news/route.ts` | `GET /api/news` — runs per request, returns normalized `NewsItem`s plus per-source status |
+| `lib/news/sources.ts` | Source adapters, each cached for an hour with `"use cache"` + `cacheLife("hours")` |
+| `lib/news/types.ts` | Shared `NewsItem` / `NewsResponse` types and source labels |
+| `components/news/relevance.ts` | Tags items with clients whose multi-word keywords or preferred agencies match |
+
+Sources (no API keys needed):
+
+- **Federal Register API** — funding notices (NOFOs, "applications for new awards") and grant-program rules, filtered by title to drop paperwork notices.
+- **Grants.gov `search2` API** — newest posted and forecasted opportunities.
+- **Grants.gov Community Blog RSS** — Grants.gov system and policy updates.
+
+A source that fails is not cached; the page shows the others and names the one that's down.
+To add a source, write a fetcher returning `NewsItem[]` in `lib/news/sources.ts` and register it in `FETCHERS`.
+
 ## Suggested demo path
 
 1. Clients → **Horizon Fleet Services** → Funding Profile

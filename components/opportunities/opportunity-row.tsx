@@ -8,8 +8,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tooltip } from "@/components/ui/tooltip";
 import { Avatar } from "@/components/shared/avatar";
 import { Deadline } from "@/components/shared/deadline";
-import { ScoreRing, scoreColor } from "@/components/shared/score-ring";
-import { DemoBadge, OpportunityStatusBadge, RecommendationBadge } from "@/components/shared/status-badge";
+import { ScoreRing } from "@/components/shared/score-ring";
+import { OpportunityStatusBadge } from "@/components/shared/status-badge";
 import { toggleSaveOpportunity } from "@/lib/data-service";
 import type { Client, GrantMatch, Opportunity } from "@/lib/types";
 import { cn, formatCompactCurrency } from "@/lib/utils";
@@ -20,63 +20,44 @@ export function OpportunityRow({
   matches,
   clients,
   focusMatch,
-  analyzed,
 }: {
   opp: Opportunity;
   matches: GrantMatch[];
   clients: Client[];
   focusMatch?: GrantMatch;
-  analyzed: boolean;
 }) {
   const router = useRouter();
   const href = `/opportunities/${opp.id}`;
   return (
-    <Card className="group p-0 transition-shadow hover:shadow-md">
-      <div className="flex flex-col gap-4 p-4 xl:flex-row xl:items-center">
+    <Card className="group p-0 transition-colors hover:border-zinc-300">
+      <div className="flex flex-col gap-4 p-5 xl:flex-row xl:items-center">
         {focusMatch && (
-          <Link href={`/matches?match=${focusMatch.id}`} className="flex shrink-0 flex-col items-center gap-1 xl:w-20" aria-label="View match analysis">
-            <ScoreRing score={focusMatch.score} size={58} />
-            <RecommendationBadge value={focusMatch.recommendation} />
+          <Link href={`/matches?match=${focusMatch.id}`} className="shrink-0" aria-label="View match analysis">
+            <ScoreRing score={focusMatch.score} size={48} />
           </Link>
         )}
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-white">{opp.agencyCode}</span>
-            <span className="truncate text-xs text-muted-foreground">
-              {opp.agency} · {opp.subAgency}
-            </span>
-          </div>
-          <Link href={href} className="mt-1.5 block text-[15px] font-semibold leading-snug tracking-tight hover:text-primary">
-            {opp.title}
-          </Link>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-            <span className="font-mono text-[11px]">{opp.opportunityNumber}</span>
-            <span>{opp.instrument}</span>
-            <span>{opp.category}</span>
-            <span>Cost share: {opp.costSharePct ? `${opp.costSharePct}%` : "None"}</span>
+          <div className="flex items-start gap-2">
+            <Link href={href} className="min-w-0 text-[15px] font-medium leading-snug tracking-tight hover:text-primary">
+              {opp.title}
+            </Link>
             <OpportunityStatusBadge status={opp.status} />
-            {analyzed && <span className="text-emerald-700">● NOFO analyzed</span>}
-            <DemoBadge className="text-[10px] text-muted-foreground" />
           </div>
-          <div className="mt-2 line-clamp-1 text-xs text-slate-600">Eligible: {opp.eligibility.join(" · ")}</div>
+          <div className="mt-1 truncate text-[13px] text-muted-foreground">{opp.agency}</div>
         </div>
-        <div className="grid shrink-0 grid-cols-3 gap-4 text-sm xl:w-[330px]">
+        <div className="grid shrink-0 grid-cols-2 gap-6 text-sm xl:w-[240px]">
           <div>
-            <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Program</div>
-            <div className="font-semibold tabular">{formatCompactCurrency(opp.estimatedFunding)}</div>
-            <div className="text-[11px] text-muted-foreground">~{opp.expectedAwards} awards</div>
+            <div className="text-[13px] text-muted-foreground">Award range</div>
+            <div className="font-medium tabular">
+              {formatCompactCurrency(opp.awardFloor)} – {formatCompactCurrency(opp.awardCeiling)}
+            </div>
           </div>
           <div>
-            <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Award range</div>
-            <div className="font-semibold tabular">{formatCompactCurrency(opp.awardCeiling)}</div>
-            <div className="text-[11px] text-muted-foreground">floor {formatCompactCurrency(opp.awardFloor)}</div>
-          </div>
-          <div>
-            <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Deadline</div>
+            <div className="text-[13px] text-muted-foreground">Deadline</div>
             <Deadline date={opp.deadline} compact />
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-3 xl:w-[220px] xl:justify-end">
+        <div className="flex shrink-0 items-center gap-3 xl:w-[200px] xl:justify-end">
           <div className="flex -space-x-1.5">
             {matches.slice(0, 4).map((m) => {
               const c = clients.find((x) => x.id === m.clientId);
@@ -90,11 +71,6 @@ export function OpportunityRow({
             })}
             {matches.length > 4 && <span className="flex size-6 items-center justify-center rounded-full bg-muted text-[10px] font-semibold ring-2 ring-card">+{matches.length - 4}</span>}
           </div>
-          {matches.length > 0 && !focusMatch && (
-            <span className="text-xs font-semibold tabular" style={{ color: scoreColor(matches[0].score) }}>
-              {matches[0].score}%
-            </span>
-          )}
           <button
             onClick={() => toggleSaveOpportunity(opp.id)}
             className={cn("rounded-md p-1.5 hover:bg-muted", opp.saved ? "text-amber-500" : "text-slate-300 hover:text-slate-500")}

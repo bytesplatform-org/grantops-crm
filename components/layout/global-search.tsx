@@ -72,10 +72,10 @@ export function GlobalSearch() {
   return (
     <DialogPrimitive.Root open={open} onOpenChange={(o) => { setOpen(o); if (!o) setQ(""); }}>
       <DialogPrimitive.Trigger asChild>
-        <button className="flex h-9 w-full max-w-md items-center gap-2 rounded-md border border-border bg-muted/70 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted">
-          <Search className="size-4" />
-          <span className="flex-1 truncate text-left">Search clients, grants, applications, documents…</span>
-          <kbd className="hidden rounded border border-border bg-card px-1.5 py-0.5 font-sans text-[10px] font-medium sm:inline">⌘K</kbd>
+        <button aria-label="Search" className="flex h-10 w-10 items-center justify-center gap-2.5 rounded-xl border border-border bg-zinc-50 text-sm text-muted-foreground transition-colors hover:bg-zinc-100 md:w-full md:justify-start md:px-4">
+          <Search className="size-[18px]" />
+          <span className="hidden flex-1 truncate text-left md:block">Search clients, grants, applications…</span>
+          <kbd className="hidden rounded border border-border bg-card px-1.5 py-0.5 font-sans text-[10px] font-medium md:inline">⌘K</kbd>
         </button>
       </DialogPrimitive.Trigger>
       <DialogPrimitive.Portal>

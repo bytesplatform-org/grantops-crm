@@ -39,16 +39,15 @@ export function ReportsView() {
             </Button>
           </>
         }
-        className="mb-0"
       />
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-        <StatCard label="Total Funding Identified" value={formatCompactCurrency(k.fundingIdentified)} change={27} icon={Radar} hint="Award ceilings of open matches" />
-        <StatCard label="Total Funding Pursued" value={formatCompactCurrency(k.fundingPursued)} change={18} icon={DollarSign} />
-        <StatCard label="Total Funding Awarded" value={formatCompactCurrency(k.awardsWon)} change={31} icon={Award} />
-        <StatCard label="Award Rate" value={`${k.awardRate}%`} change={6} icon={Percent} hint="Of decided applications" />
-        <StatCard label="Avg. Application Value" value={formatCompactCurrency(avg)} change={4} icon={Scale} />
-        <StatCard label="Active Clients" value={k.activeClients} change={12} icon={Briefcase} />
+        <StatCard highlight label="Total Funding Identified" value={formatCompactCurrency(k.fundingIdentified)} icon={Radar} hint="Award ceilings of open matches" />
+        <StatCard label="Total Funding Pursued" value={formatCompactCurrency(k.fundingPursued)} icon={DollarSign} />
+        <StatCard label="Total Funding Awarded" value={formatCompactCurrency(k.awardsWon)} icon={Award} />
+        <StatCard label="Award Rate" value={`${k.awardRate}%`} icon={Percent} hint="Of decided applications" />
+        <StatCard label="Avg. Application Value" value={formatCompactCurrency(avg)} icon={Scale} />
+        <StatCard label="Active Clients" value={k.activeClients} icon={Briefcase} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-3">

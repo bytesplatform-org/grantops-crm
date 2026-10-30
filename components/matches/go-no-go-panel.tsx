@@ -71,7 +71,7 @@ export function GoNoGoPanel({ matchId, onApproved }: { matchId: string; onApprov
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 px-4 py-3">
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Go / No-Go Score</div>
+          <div className="text-[13px] text-muted-foreground">Go / No-Go Score</div>
           <div className="mt-0.5 flex items-baseline gap-1">
             <span className="text-3xl font-semibold tabular">{total}</span>
             <span className="text-sm text-muted-foreground">/ 10</span>
@@ -117,10 +117,10 @@ export function GoNoGoPanel({ matchId, onApproved }: { matchId: string; onApprov
                       "flex h-8 w-[68px] flex-col items-center justify-center rounded-[5px] text-xs font-semibold transition-colors disabled:cursor-not-allowed",
                       v === s
                         ? s === 2
-                          ? "bg-emerald-600 text-white shadow-sm"
+                          ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
                           : s === 1
-                            ? "bg-amber-500 text-white shadow-sm"
-                            : "bg-red-600 text-white shadow-sm"
+                            ? "bg-amber-100 text-amber-800 ring-1 ring-amber-200"
+                            : "bg-red-100 text-red-800 ring-1 ring-red-200"
                         : "text-muted-foreground hover:bg-card hover:text-foreground",
                     )}
                   >

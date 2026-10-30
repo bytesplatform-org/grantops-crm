@@ -15,7 +15,7 @@ export const badgeVariants = cva(
         danger: "border-red-200/70 bg-red-50 text-red-700",
         info: "border-sky-200/70 bg-sky-50 text-sky-700",
         violet: "border-violet-200/70 bg-violet-50 text-violet-700",
-        dark: "border-transparent bg-slate-800 text-white",
+        dark: "border-slate-200 bg-slate-100 text-slate-700",
       },
     },
     defaultVariants: { variant: "default" },

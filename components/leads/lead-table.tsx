@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { LEAD_STAGES, type Lead, type LeadStage } from "@/lib/types";
 import { moveLeadStage } from "@/lib/data-service";
-import { formatCurrency, relativeTime } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { EmptyState } from "@/components/shared/empty-state";
 import { UserPlus } from "lucide-react";
 
@@ -29,12 +29,8 @@ export function LeadTable({
           <TableRow className="hover:bg-transparent">
             <TableHead>Company</TableHead>
             <TableHead>Contact</TableHead>
-            <TableHead>Phone</TableHead>
             <TableHead>Org Type</TableHead>
-            <TableHead>Funding Need</TableHead>
             <TableHead className="text-right">Est. Value</TableHead>
-            <TableHead>Source</TableHead>
-            <TableHead>Last Contact</TableHead>
             <TableHead>Stage</TableHead>
             <TableHead>Next Action</TableHead>
             <TableHead className="w-10" />
@@ -45,17 +41,11 @@ export function LeadTable({
             <TableRow key={l.id} className="cursor-pointer" onClick={() => onOpen(l.id)}>
               <TableCell className="font-medium whitespace-nowrap">{l.company}</TableCell>
               <TableCell>
-                <div className="whitespace-nowrap text-[13px]">{l.contactName}</div>
-                <div className="text-xs text-muted-foreground">{l.email}</div>
+                <div className="whitespace-nowrap">{l.contactName}</div>
+                <div className="text-[13px] text-muted-foreground">{l.email}</div>
               </TableCell>
-              <TableCell className="whitespace-nowrap text-xs text-slate-600 tabular">{l.phone}</TableCell>
-              <TableCell className="whitespace-nowrap text-xs">{l.organizationType}</TableCell>
-              <TableCell className="max-w-56">
-                <span className="line-clamp-2 text-xs text-slate-600">{l.fundingNeed}</span>
-              </TableCell>
+              <TableCell className="whitespace-nowrap text-[13px] text-muted-foreground">{l.organizationType}</TableCell>
               <TableCell className="text-right font-medium tabular">{formatCurrency(l.estimatedValue)}</TableCell>
-              <TableCell className="max-w-40 truncate text-xs text-slate-600">{l.source}</TableCell>
-              <TableCell className="whitespace-nowrap text-xs text-muted-foreground">{relativeTime(l.lastContact)}</TableCell>
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <select
                   aria-label={`Stage for ${l.company}`}
@@ -64,14 +54,14 @@ export function LeadTable({
                     moveLeadStage(l.id, e.target.value as LeadStage);
                     toast.success(`${l.company} moved to ${e.target.value}`);
                   }}
-                  className="h-7 rounded border border-border bg-card px-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-ring/30"
+                  className="h-7 rounded-md border border-border bg-card px-1.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-ring/30"
                 >
                   {LEAD_STAGES.map((s) => (
                     <option key={s}>{s}</option>
                   ))}
                 </select>
               </TableCell>
-              <TableCell className="max-w-48 truncate text-xs">{l.nextAction}</TableCell>
+              <TableCell className="max-w-56 truncate text-[13px] text-muted-foreground">{l.nextAction}</TableCell>
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

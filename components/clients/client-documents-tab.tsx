@@ -72,7 +72,7 @@ export function ClientDocumentsTab({ client, requestAppId }: { client: Client; r
           return (
             <div key={g.category}>
               <div className="flex items-center justify-between bg-muted/40 px-5 py-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{g.label}</span>
+                <span className="text-[13px] font-medium text-muted-foreground">{g.label}</span>
                 <span className="text-[11px] text-muted-foreground tabular">{items.length}</span>
               </div>
               {items.length ? (

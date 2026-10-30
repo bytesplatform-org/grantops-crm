@@ -55,7 +55,7 @@ export function TasksView() {
         }
       />
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Open tasks" value={open.length} hint={`${open.filter((t) => t.status === "In Progress").length} in progress`} />
+        <StatCard highlight label="Open tasks" value={open.length} hint={`${open.filter((t) => t.status === "In Progress").length} in progress`} />
         <StatCard label="Overdue" value={<span className={overdue ? "text-red-600" : undefined}>{overdue}</span>} hint="Needs attention" />
         <StatCard label="Due in 7 days" value={dueWeek} hint="Across all applications" />
         <StatCard label="Completed this week" value={doneWeek} hint="Team throughput" />

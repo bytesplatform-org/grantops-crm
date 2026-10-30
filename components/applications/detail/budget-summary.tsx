@@ -8,7 +8,7 @@ import { budgetTotals } from "@/lib/selectors";
 import { BUDGET_CATEGORIES, type ApplicationBudget, type Opportunity } from "@/lib/types";
 import { cn, formatCurrency, wordCount } from "@/lib/utils";
 
-const CAT_COLORS = ["#1f4fd1", "#60a5fa", "#0ea5e9", "#7c3aed", "#14b8a6", "#f59e0b", "#94a3b8", "#cbd5e1"];
+const CAT_COLORS = ["#202327", "#a3c93a", "#52525b", "#c8f03c", "#71717a", "#65a30d", "#a1a1aa", "#d4d4d8"];
 
 export function BudgetSummary({ budget, opp }: { budget: ApplicationBudget; opp?: Opportunity }) {
   const t = budgetTotals(budget);

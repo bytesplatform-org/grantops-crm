@@ -2,16 +2,17 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Briefcase, Filter, Landmark, Search, Star, X } from "lucide-react";
+import { Briefcase, Filter, Landmark, Search, SlidersHorizontal, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select } from "@/components/ui/select";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { useAppData } from "@/lib/data-service";
 import type { OrganizationType } from "@/lib/types";
-import { cn, daysUntil, formatCompactCurrency } from "@/lib/utils";
+import { daysUntil, formatCompactCurrency } from "@/lib/utils";
 import { OpportunityRow } from "./opportunity-row";
 
 const FUNDING_BUCKETS = [
@@ -107,48 +108,32 @@ export function OpportunitiesView() {
     setSavedOnly(false);
     setQ("");
   };
+  const moreCount = [category, funding, eligibility, status].filter(Boolean).length + (savedOnly ? 1 : 0);
   const open = data.opportunities.filter((o) => daysUntil(o.deadline) >= 0);
-  const totalAvailable = rows.reduce((s, r) => s + r.opp.estimatedFunding, 0);
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
         title="Funding Opportunities"
-        description="Discover and evaluate federal funding opportunities for your client portfolio."
-        meta={
-          <span className="text-xs text-muted-foreground">
-            {open.length} open opportunities · {data.opportunities.filter((o) => o.saved).length} saved · Sample opportunity data for demonstration
-          </span>
-        }
+        description={`${open.length} open federal opportunities (sample data for demonstration).`}
         actions={
-          <>
-            <Button variant="outline" onClick={() => setSavedOnly((s) => !s)} className={cn(savedOnly && "border-amber-300 bg-amber-50 text-amber-800")}>
-              <Star className={cn(savedOnly && "fill-current text-amber-500")} /> Saved only
-            </Button>
-            <Button asChild>
-              <Link href="/matches">
-                <Landmark /> View all matches
-              </Link>
-            </Button>
-          </>
+          <Button variant="outline" asChild>
+            <Link href="/matches">
+              <Landmark /> View matches
+            </Link>
+          </Button>
         }
       />
 
       {contextClient && (
-        <div className="mb-4 flex items-center gap-3 rounded-lg border border-blue-200 bg-primary-soft px-4 py-3">
-          <span className="flex size-8 items-center justify-center rounded-md bg-primary text-white">
-            <Briefcase className="size-4" />
-          </span>
-          <div className="min-w-0 flex-1 text-sm">
-            <div className="font-medium text-foreground">
-              Showing potential matches for{" "}
-              <Link href={`/clients/${contextClient.id}`} className="text-primary hover:underline">
-                {contextClient.name}
-              </Link>
-            </div>
-            <div className="text-xs text-slate-600">
-              Based on funding profile: {contextClient.fundingProfile.objectives.slice(0, 3).join(", ")} · Target {formatCompactCurrency(contextClient.fundingProfile.targetAmount)} · {contextClient.state}
-            </div>
+        <div className="flex items-center gap-3 rounded-2xl border border-lime-200 bg-primary-soft px-4 py-3">
+          <Briefcase className="size-4 shrink-0 text-primary" />
+          <div className="min-w-0 flex-1 truncate text-sm">
+            Potential matches for{" "}
+            <Link href={`/clients/${contextClient.id}`} className="font-medium text-primary hover:underline">
+              {contextClient.name}
+            </Link>
+            <span className="text-[13px] text-muted-foreground"> · Target {formatCompactCurrency(contextClient.fundingProfile.targetAmount)} · {contextClient.state}</span>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setClient("")} aria-label="Clear client filter">
             <X /> Clear
@@ -156,52 +141,13 @@ export function OpportunitiesView() {
         </div>
       )}
 
-      <Card className="mb-4 p-3">
+      <div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="relative min-w-64 flex-1">
+          <div className="relative min-w-56 flex-1">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by title, agency, opportunity number or keyword…" className="pl-8" aria-label="Search opportunities" />
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search opportunities…" className="pl-8" aria-label="Search opportunities" />
           </div>
-          <Select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="w-44" aria-label="Sort">
-            <option value="deadline">Sort: Deadline</option>
-            <option value="ceiling">Sort: Award ceiling</option>
-            <option value="match">Sort: Best match</option>
-          </Select>
-        </div>
-        <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-7">
-          <Select value={agency} onChange={(e) => setAgency(e.target.value)} aria-label="Agency">
-            <option value="">All agencies</option>
-            {agencies.map((a) => (
-              <option key={a}>{a}</option>
-            ))}
-          </Select>
-          <Select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Category">
-            <option value="">All categories</option>
-            {categories.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </Select>
-          <Select value={funding} onChange={(e) => setFunding(e.target.value)} aria-label="Funding amount">
-            {FUNDING_BUCKETS.map((b) => (
-              <option key={b.value} value={b.value}>
-                {b.label}
-              </option>
-            ))}
-          </Select>
-          <Select value={deadline} onChange={(e) => setDeadline(e.target.value)} aria-label="Deadline">
-            {DEADLINES.map((b) => (
-              <option key={b.value} value={b.value}>
-                {b.label}
-              </option>
-            ))}
-          </Select>
-          <Select value={eligibility} onChange={(e) => setEligibility(e.target.value)} aria-label="Eligibility">
-            <option value="">Any eligibility</option>
-            {ORG_TYPES.map((o) => (
-              <option key={o}>{o}</option>
-            ))}
-          </Select>
-          <Select value={clientParam} onChange={(e) => setClient(e.target.value)} aria-label="Client">
+          <Select value={clientParam} onChange={(e) => setClient(e.target.value)} aria-label="Client" className="w-44">
             <option value="">Any client</option>
             {data.clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -209,35 +155,102 @@ export function OpportunitiesView() {
               </option>
             ))}
           </Select>
-          <Select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
-            <option value="">Any status</option>
-            {["Posted", "Forecasted", "Closing Soon", "Closed", "Archived"].map((s) => (
-              <option key={s}>{s}</option>
+          <Select value={agency} onChange={(e) => setAgency(e.target.value)} aria-label="Agency" className="w-44">
+            <option value="">All agencies</option>
+            {agencies.map((a) => (
+              <option key={a}>{a}</option>
             ))}
           </Select>
+          <Select value={deadline} onChange={(e) => setDeadline(e.target.value)} aria-label="Deadline" className="w-44">
+            {DEADLINES.map((b) => (
+              <option key={b.value} value={b.value}>
+                {b.label}
+              </option>
+            ))}
+          </Select>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <SlidersHorizontal /> More filters
+                {moreCount > 0 && <span className="rounded bg-primary-soft px-1.5 text-[11px] font-medium text-primary tabular">{moreCount}</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-72 space-y-3 p-4">
+              <FilterField label="Category">
+                <Select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Category">
+                  <option value="">All categories</option>
+                  {categories.map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+                </Select>
+              </FilterField>
+              <FilterField label="Award size">
+                <Select value={funding} onChange={(e) => setFunding(e.target.value)} aria-label="Funding amount">
+                  {FUNDING_BUCKETS.map((b) => (
+                    <option key={b.value} value={b.value}>
+                      {b.label}
+                    </option>
+                  ))}
+                </Select>
+              </FilterField>
+              <FilterField label="Eligibility">
+                <Select value={eligibility} onChange={(e) => setEligibility(e.target.value)} aria-label="Eligibility">
+                  <option value="">Any eligibility</option>
+                  {ORG_TYPES.map((o) => (
+                    <option key={o}>{o}</option>
+                  ))}
+                </Select>
+              </FilterField>
+              <FilterField label="Status">
+                <Select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
+                  <option value="">Any status</option>
+                  {["Posted", "Forecasted", "Closing Soon", "Closed", "Archived"].map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </Select>
+              </FilterField>
+              <label className="flex items-center gap-2 text-sm">
+                <Checkbox checked={savedOnly} onCheckedChange={(v) => setSavedOnly(v === true)} />
+                <Star className="size-3.5 text-amber-500" /> Saved only
+              </label>
+            </PopoverContent>
+          </Popover>
+          <Select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="w-40" aria-label="Sort">
+            <option value="deadline">Sort: Deadline</option>
+            <option value="ceiling">Sort: Award size</option>
+            <option value="match">Sort: Best match</option>
+          </Select>
         </div>
-      </Card>
-
-      <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-        <span>
-          <span className="font-semibold text-foreground">{rows.length}</span> opportunities · {formatCompactCurrency(totalAvailable)} total program funding
-        </span>
-        {activeFilters > 0 && (
-          <button onClick={clear} className="inline-flex items-center gap-1 font-medium text-primary hover:underline">
-            <Filter className="size-3" /> Clear {activeFilters} filter{activeFilters === 1 ? "" : "s"}
-          </button>
-        )}
+        <div className="mt-3 flex items-center justify-between text-[13px] text-muted-foreground">
+          <span>
+            {rows.length} opportunit{rows.length === 1 ? "y" : "ies"}
+          </span>
+          {activeFilters > 0 && (
+            <button onClick={clear} className="inline-flex items-center gap-1 font-medium text-primary hover:underline">
+              <Filter className="size-3" /> Clear {activeFilters} filter{activeFilters === 1 ? "" : "s"}
+            </button>
+          )}
+        </div>
       </div>
 
       {rows.length === 0 ? (
         <EmptyState icon={Search} title="No opportunities match these filters" description="Broaden your search or clear filters to see more opportunities." action={<Button variant="outline" size="sm" onClick={clear}>Clear filters</Button>} />
       ) : (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {rows.map(({ opp, matches, focusMatch }) => (
-            <OpportunityRow key={opp.id} opp={opp} matches={matches} clients={data.clients} focusMatch={focusMatch} analyzed={!!data.nofoAnalyses[opp.id]} />
+            <OpportunityRow key={opp.id} opp={opp} matches={matches} clients={data.clients} focusMatch={focusMatch} />
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1">
+      <div className="text-[13px] text-muted-foreground">{label}</div>
+      {children}
     </div>
   );
 }

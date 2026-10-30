@@ -4,10 +4,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Columns3, List, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
+import { StatCard } from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Card } from "@/components/ui/card";
 import { Tabs, SegmentedList, SegmentedTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { deleteLead, useAppData } from "@/lib/data-service";
@@ -25,17 +25,14 @@ export function LeadsView() {
   const pathname = usePathname();
   const params = useSearchParams();
   const openId = params.get("lead");
-  const [view, setView] = useState<"pipeline" | "table">("pipeline");
+  const [view, setView] = useState<"pipeline" | "table">("table");
   const [q, setQ] = useState("");
   const [stage, setStage] = useState("all");
   const [orgType, setOrgType] = useState("all");
   const [owner, setOwner] = useState("all");
-  const [source, setSource] = useState("all");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Lead | undefined>();
   const [deleting, setDeleting] = useState<Lead | undefined>();
-
-  const sources = useMemo(() => [...new Set(data.leads.map((l) => l.source))].sort(), [data.leads]);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -44,10 +41,9 @@ export function LeadsView() {
         (!term || [l.company, l.contactName, l.email, l.fundingNeed, l.location].some((s) => s.toLowerCase().includes(term))) &&
         (stage === "all" || l.stage === stage) &&
         (orgType === "all" || l.organizationType === orgType) &&
-        (owner === "all" || l.ownerId === owner) &&
-        (source === "all" || l.source === source),
+        (owner === "all" || l.ownerId === owner),
     );
-  }, [data.leads, q, stage, orgType, owner, source]);
+  }, [data.leads, q, stage, orgType, owner]);
 
   const stats = useMemo(() => {
     const open = data.leads.filter((l) => l.stage !== "Won" && l.stage !== "Lost");
@@ -58,7 +54,6 @@ export function LeadsView() {
       pipeline: open.reduce((s, l) => s + l.estimatedValue, 0),
       engagement: open.reduce((s, l) => s + l.proposalValue, 0),
       winRate: won + lost ? Math.round((won / (won + lost)) * 100) : 0,
-      byStage: LEAD_STAGES.map((s) => ({ stage: s, value: data.leads.filter((l) => l.stage === s).reduce((a, l) => a + l.estimatedValue, 0), count: data.leads.filter((l) => l.stage === s).length })),
     };
   }, [data.leads]);
 
@@ -70,13 +65,12 @@ export function LeadsView() {
   };
 
   const openLead = data.leads.find((l) => l.id === openId);
-  const maxStage = Math.max(1, ...stats.byStage.map((s) => s.value));
 
   return (
     <div>
       <PageHeader
         title="Leads"
-        description="Business development pipeline for prospective funding clients."
+        description="Prospective funding clients."
         actions={
           <Button
             onClick={() => {
@@ -89,35 +83,11 @@ export function LeadsView() {
         }
       />
 
-      <div className="mb-5 grid gap-4 lg:grid-cols-[repeat(3,minmax(0,1fr))_2fr]">
-        <Card className="p-4">
-          <div className="text-xs font-medium text-muted-foreground">Open leads</div>
-          <div className="mt-1.5 text-2xl font-semibold tabular">{stats.open}</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-xs font-medium text-muted-foreground">Pipeline project value</div>
-          <div className="mt-1.5 text-2xl font-semibold tabular">{formatCompactCurrency(stats.pipeline)}</div>
-          <div className="mt-1 text-xs text-muted-foreground">{formatCompactCurrency(stats.engagement)} in proposed engagements</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-xs font-medium text-muted-foreground">Win rate</div>
-          <div className="mt-1.5 text-2xl font-semibold tabular">{stats.winRate}%</div>
-          <div className="mt-1 text-xs text-muted-foreground">Won vs. lost, trailing 12 months</div>
-        </Card>
-        <Card className="p-4">
-          <div className="mb-2 text-xs font-medium text-muted-foreground">Value by stage</div>
-          <div className="flex h-14 items-end gap-1.5">
-            {stats.byStage.map((s) => (
-              <button key={s.stage} title={`${s.stage}: ${formatCompactCurrency(s.value)} (${s.count})`} onClick={() => setStage(stage === s.stage ? "all" : s.stage)} className="group flex flex-1 flex-col items-center gap-1">
-                <div
-                  className={`w-full rounded-sm transition-colors ${stage === s.stage ? "bg-primary" : s.stage === "Lost" ? "bg-slate-300 group-hover:bg-slate-400" : "bg-primary/40 group-hover:bg-primary/60"}`}
-                  style={{ height: `${Math.max(4, (s.value / maxStage) * 40)}px` }}
-                />
-                <span className="w-full truncate text-center text-[9px] text-muted-foreground">{s.stage.split(" ")[0]}</span>
-              </button>
-            ))}
-          </div>
-        </Card>
+      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatCard highlight label="Open leads" value={stats.open} />
+        <StatCard label="Pipeline value" value={formatCompactCurrency(stats.pipeline)} />
+        <StatCard label="Proposed engagements" value={formatCompactCurrency(stats.engagement)} />
+        <StatCard label="Win rate" value={`${stats.winRate}%`} />
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -145,20 +115,14 @@ export function LeadsView() {
             </option>
           ))}
         </Select>
-        <Select value={source} onChange={(e) => setSource(e.target.value)} className="w-52" aria-label="Filter by source">
-          <option value="all">All sources</option>
-          {sources.map((s) => (
-            <option key={s}>{s}</option>
-          ))}
-        </Select>
         <div className="ml-auto">
           <Tabs value={view} onValueChange={(v) => setView(v as "pipeline" | "table")}>
             <SegmentedList>
-              <SegmentedTrigger value="pipeline">
-                <Columns3 /> Pipeline
-              </SegmentedTrigger>
               <SegmentedTrigger value="table">
                 <List /> Table
+              </SegmentedTrigger>
+              <SegmentedTrigger value="pipeline">
+                <Columns3 /> Kanban
               </SegmentedTrigger>
             </SegmentedList>
           </Tabs>

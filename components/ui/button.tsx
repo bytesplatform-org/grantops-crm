@@ -4,20 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover",
+        default: "bg-primary text-primary-foreground hover:bg-primary-hover",
         secondary: "bg-secondary text-secondary-foreground hover:bg-accent border border-border",
-        outline: "border border-input bg-card text-foreground shadow-sm hover:bg-muted",
+        outline: "border border-input bg-card text-foreground hover:bg-muted",
         ghost: "text-foreground hover:bg-muted",
         destructive: "bg-destructive text-white shadow-sm hover:bg-red-700",
         success: "bg-emerald-600 text-white shadow-sm hover:bg-emerald-700",
         link: "text-primary underline-offset-4 hover:underline px-0 h-auto",
       },
       size: {
-        default: "h-9 px-3.5",
+        default: "h-9 px-4",
         sm: "h-8 px-2.5 text-[13px]",
         xs: "h-7 px-2 text-xs [&_svg]:size-3.5",
         lg: "h-10 px-5",

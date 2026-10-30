@@ -14,6 +14,10 @@ interface Item {
   href: string;
 }
 
+function appHref(id?: string, tab?: string) {
+  return id ? `/applications/${id}${tab ? `?tab=${tab}` : ""}` : "/applications";
+}
+
 export function attentionItems(data: AppData): Item[] {
   const items: Item[] = [];
   const overdueDocs = data.documents.filter((d) => d.status === "Overdue");
@@ -24,7 +28,7 @@ export function attentionItems(data: AppData): Item[] {
       tone: "text-red-600 bg-red-50",
       label: `${overdueDocs.length} document${overdueDocs.length === 1 ? "" : "s"} overdue`,
       detail: overdueDocs.slice(0, 2).map((d) => d.name).join(", "),
-      href: "/documents?tab=requests",
+      href: appHref(overdueDocs[0].applicationId, "documents"),
     });
   const active = data.applications.filter(isActive);
   const missingLetters = active.filter((a) => a.compliance.some((c) => /Letter/i.test(c.requirement) && c.status !== "Complete"));
@@ -38,7 +42,7 @@ export function attentionItems(data: AppData): Item[] {
         .slice(0, 2)
         .map((a) => data.clients.find((c) => c.id === a.clientId)?.name)
         .join(", "),
-      href: missingLetters.length === 1 ? `/applications/${missingLetters[0].id}?tab=requirements` : "/applications",
+      href: missingLetters.length === 1 ? `/applications/${missingLetters[0].id}?tab=documents` : "/applications",
     });
   const expiring = data.opportunities.filter((o) => {
     const d = daysUntil(o.deadline);
@@ -68,7 +72,7 @@ export function attentionItems(data: AppData): Item[] {
         .slice(0, 2)
         .map((r) => data.clients.find((c) => c.id === data.applications.find((a) => a.id === r.applicationId)?.clientId)?.name)
         .join(", "),
-      href: approvals.length === 1 ? `/applications/${approvals[0].applicationId}?tab=reviews` : "/applications",
+      href: approvals.length === 1 ? `/applications/${approvals[0].applicationId}` : "/applications",
     });
   const overdueTasks = data.tasks.filter((t) => t.status !== "Done" && daysUntil(t.dueDate) < 0);
   if (overdueTasks.length)
@@ -78,7 +82,7 @@ export function attentionItems(data: AppData): Item[] {
       tone: "text-sky-600 bg-sky-50",
       label: `${overdueTasks.length} task${overdueTasks.length === 1 ? "" : "s"} past due`,
       detail: overdueTasks.slice(0, 2).map((t) => t.title).join(", "),
-      href: "/tasks",
+      href: appHref(overdueTasks[0].applicationId),
     });
   return items;
 }
@@ -87,18 +91,18 @@ export function NeedsAttention({ data }: { data: AppData }) {
   const items = attentionItems(data);
   if (!items.length) return <p className="px-5 py-8 text-center text-sm text-muted-foreground">Nothing needs attention right now.</p>;
   return (
-    <ul className="divide-y divide-border">
+    <ul className="divide-y divide-zinc-100">
       {items.map((i) => (
         <li key={i.key}>
-          <Link href={i.href} className="group flex items-center gap-3 px-5 py-3 transition-colors hover:bg-muted/50">
-            <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-md", i.tone)}>
+          <Link href={i.href} className="group flex items-center gap-3 px-5 py-3 transition-colors hover:bg-zinc-50">
+            <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-full", i.tone)}>
               <i.icon className="size-4" />
             </span>
             <div className="min-w-0 flex-1">
-              <div className="text-[13px] font-medium">{i.label}</div>
-              <div className="truncate text-xs text-muted-foreground">{i.detail}</div>
+              <div className="text-sm font-medium">{i.label}</div>
+              <div className="truncate text-[13px] text-muted-foreground">{i.detail}</div>
             </div>
-            <ChevronRight className="size-4 text-slate-300 group-hover:text-slate-500" />
+            <ChevronRight className="size-4 text-zinc-300 group-hover:text-zinc-500" />
           </Link>
         </li>
       ))}

@@ -61,7 +61,7 @@ export function AgencyChart({ data }: { data: AppData }) {
           <XAxis type="number" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "#94a3b8" }} tickFormatter={(v: number) => formatCompactCurrency(v)} />
           <YAxis type="category" dataKey="label" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: "#475569" }} width={76} />
           <Tooltip cursor={{ fill: "#f1f5f9" }} content={<Tip />} />
-          <Bar dataKey="amount" fill="#1f4fd1" radius={[0, 4, 4, 0]} maxBarSize={18} />
+          <Bar dataKey="amount" fill="#202327" radius={[0, 4, 4, 0]} maxBarSize={18} />
         </BarChart>
       </ResponsiveContainer>
     </div>

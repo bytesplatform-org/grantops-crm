@@ -65,7 +65,7 @@ export function LeadBoard({ leads, onOpen }: { leads: Lead[]; onOpen: (id: strin
                     draggable
                     onDragStart={() => setDragId(l.id)}
                     onDragEnd={() => setDragId(null)}
-                    className={cn("group rounded-md border border-border bg-card p-3 shadow-[var(--shadow-card)] transition-shadow hover:shadow-md", dragId === l.id && "opacity-50")}
+                    className={cn("group rounded-lg border border-border bg-card p-3 transition-colors hover:border-zinc-300", dragId === l.id && "opacity-50")}
                   >
                     <div className="flex items-start gap-1.5">
                       <GripVertical className="mt-0.5 size-3.5 shrink-0 cursor-grab text-slate-300 group-hover:text-slate-400" />

@@ -30,7 +30,7 @@ export function WritingTab({ ctx }: { ctx: AppContext }) {
           const wc = wordCount(s.content);
           const pct = Math.min(100, (wc / s.wordLimit) * 100);
           return (
-            <Card key={s.id} className="flex flex-col p-4">
+            <Card key={s.id} className="flex flex-col p-5">
               <div className="flex items-start justify-between gap-2">
                 <div className="text-sm font-semibold">{s.title}</div>
                 <SectionStatusBadge status={s.status} />

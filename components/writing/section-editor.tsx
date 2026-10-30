@@ -86,14 +86,6 @@ export function SectionEditor({ app, section, onTextChange }: { app: Application
         const draft = await aiService.generateDraft(section.key, { client, opportunity, amount: app.fundingRequested });
         applyAi(draft, `Draft generated for ${section.title}.`);
         toast.success("Draft generated", { description: "Review and tailor before submission." });
-      } else if (a === "improve") {
-        applyAi(await aiService.improve(textRef.current, section.title), `${section.title} improved.`);
-        toast.success("Language improved");
-      } else if (a === "shorten") {
-        const before = wordCount(textRef.current);
-        const next = await aiService.shorten(textRef.current);
-        applyAi(next, `${section.title} shortened.`);
-        toast.success("Section shortened", { description: `${before} → ${wordCount(next)} words` });
       } else {
         setCheck(await aiService.checkRequirement({ title: section.title, content: textRef.current, wordLimit: section.wordLimit }));
       }
@@ -135,7 +127,7 @@ export function SectionEditor({ app, section, onTextChange }: { app: Application
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/70 backdrop-blur-[1px]">
             <div className="flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2.5 text-sm shadow-sm">
               <Loader2 className="size-4 animate-spin text-primary" />
-              {busy === "draft" ? "Drafting from client profile, NOFO and evidence…" : busy === "improve" ? "Improving clarity and evidence…" : "Tightening language…"}
+              Drafting from client profile, NOFO and evidence…
             </div>
           </div>
         )}

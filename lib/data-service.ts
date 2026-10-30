@@ -846,7 +846,7 @@ export function setReviewStatus(reviewId: string, status: ReviewStatus) {
         if (r.type === "Compliance Review") a.compliance.forEach((c) => c.status === "Needs Review" && (c.status = "Complete"));
       }
       log(d, { type: "review", message: `${r.type} approved.`, applicationId: r.applicationId, clientId: a?.clientId });
-      notify(d, { type: "review", title: `${r.type} completed`, body: d.opportunities.find((o) => o.id === a?.opportunityId)?.title ?? "", href: `/applications/${r.applicationId}?tab=reviews` });
+      notify(d, { type: "review", title: `${r.type} completed`, body: d.opportunities.find((o) => o.id === a?.opportunityId)?.title ?? "", href: `/applications/${r.applicationId}` });
     }
   });
 }

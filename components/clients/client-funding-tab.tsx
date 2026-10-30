@@ -17,7 +17,7 @@ import { splitList } from "@/components/leads/constants";
 function Block({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</h4>
+      <h4 className="mb-2 text-[13px] font-medium text-muted-foreground">{label}</h4>
       {children}
     </div>
   );
@@ -41,19 +41,19 @@ export function ClientFundingTab({ client }: { client: Client }) {
         <CardContent>
           <div className="mb-6 grid grid-cols-2 gap-4 rounded-lg border border-border bg-muted/40 p-4 sm:grid-cols-4">
             <div>
-              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Target amount</div>
+              <div className="text-[13px] text-muted-foreground">Target amount</div>
               <div className="mt-1 text-lg font-semibold tabular">{formatCurrency(fp.targetAmount)}</div>
             </div>
             <div>
-              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Match capacity</div>
+              <div className="text-[13px] text-muted-foreground">Match capacity</div>
               <div className="mt-1 text-lg font-semibold tabular">Up to {fp.matchCapacityPct}%</div>
             </div>
             <div>
-              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Past federal awards</div>
+              <div className="text-[13px] text-muted-foreground">Past federal awards</div>
               <div className="mt-1 text-lg font-semibold tabular">{fp.pastAwards.length}</div>
             </div>
             <div>
-              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Preferred agencies</div>
+              <div className="text-[13px] text-muted-foreground">Preferred agencies</div>
               <div className="mt-1 text-lg font-semibold tabular">{fp.preferredAgencies.length}</div>
             </div>
           </div>
